@@ -1,0 +1,27 @@
+*{
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+a {
+  text-decoration: none; /* 去掉所有链接的下划线 */
+}
+.router-link-active {
+  text-decoration: none; /* 去掉激活状态下的下划线 */
+}
+
+
+// 定义全局主题变量
+:root {
+  --sidebar-bg-color: #ececec;
+  --sidebar-text-color: #333;
+  --nav-list-bg-color:#d6d6d6;
+}
+
+html.dark {
+  --sidebar-bg-color: #1f1f1f;
+  --sidebar-text-color: #e5e7eb;
+   --nav-list-bg-color:#313131;
+}
+
+
