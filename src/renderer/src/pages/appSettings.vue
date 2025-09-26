@@ -8,9 +8,17 @@ import BaseLayout from '@renderer/components/BaseLayout.vue'
       <template #list>
         <div class="list">
           <ul>
-            <li><RouterLink to="/settings">AI模型</RouterLink></li>
-            <li><RouterLink to="/settings/network">网络</RouterLink></li>
-            <li><RouterLink to="/settings/other">其他</RouterLink></li>
+            <li>
+              <RouterLink to="/settings/aimodel" active-class="active"
+                ><div class="button">AI模型</div></RouterLink
+              >
+            </li>
+            <li>
+              <RouterLink to="/settings/network" active-class="active"
+                ><div class="button">网络</div></RouterLink
+              >
+            </li>
+            <!-- <li><RouterLink to="/settings/other">其他</RouterLink></li> -->
           </ul>
         </div>
       </template>
@@ -32,11 +40,21 @@ import BaseLayout from '@renderer/components/BaseLayout.vue'
     justify-content: center;
     ul {
       li {
-        margin: 8px 0;
-        padding: 5px 30px;
-        border: 1px solid var(--el-border-color);
-        border-radius: 4px;
+        .button {
+          margin: 8px 0;
+          padding: 10px 30px;
+          border: 1px solid var(--el-border-color);
+          border-radius: 4px;
+          display: flex;
+          justify-content: center;
+        }
       }
+    }
+  }
+  .active {
+    .button {
+      background-color: #e3f2fd;
+      border: #61b0e8 dashed 1px;
     }
   }
 }

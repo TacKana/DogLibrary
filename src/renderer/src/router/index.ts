@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppSettings from '@renderer/pages/appSettings.vue'
 import AiModel from '@renderer/pages/appSettings/aiModel.vue'
 import Network from '@renderer/pages/appSettings/network.vue'
-import Other from '@renderer/pages/appSettings/other.vue'
+// import Other from '@renderer/pages/appSettings/other.vue'
 
 import Home from '@renderer/pages/home.vue'
 import TopicCache from '@renderer/pages/topicCache.vue'
@@ -11,8 +11,9 @@ import TopicCache from '@renderer/pages/topicCache.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/', redirect: '/home' },
     {
-      path: '/',
+      path: '/home',
       component: Home
     },
     {
@@ -23,18 +24,19 @@ const router = createRouter({
       path: '/settings',
       component: AppSettings,
       children: [
+        { path: '', redirect: '/settings/aimodel' },
         {
-          path: '',
+          path: 'aimodel',
           component: AiModel
         },
         {
           path: 'network',
           component: Network
-        },
-        {
-          path: 'other',
-          component: Other
         }
+        // {
+        //   path: 'other',
+        //   component: Other
+        // }
       ]
     }
   ]

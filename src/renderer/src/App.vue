@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ElRow, ElCol, ElSwitch } from 'element-plus'
+import { ElRow, ElCol, ElSwitch, ElIcon } from 'element-plus'
 import { Sunset, MoonNight } from '@element-plus/icons-vue'
 import { useDark } from '@vueuse/core'
+import SvgIcon from './components/SvgIcon.vue'
 
 // 深色模式切换按钮
 const colorMode = useDark()
@@ -21,15 +22,41 @@ const colorMode = useDark()
             />
           </div>
           <ul>
-            <li><RouterLink to="/">首页</RouterLink></li>
-            <li><RouterLink to="/cache">题目缓存</RouterLink></li>
-            <li><RouterLink to="/settings">设置</RouterLink></li>
+            <li>
+              <RouterLink active-class="active" to="/home">
+                <div class="button">
+                  <el-icon size="24px">
+                    <SvgIcon icon-class="icon-shouye" />
+                  </el-icon>
+                </div>
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink active-class="active" to="/cache">
+                <div class="button">
+                  <el-icon size="24px">
+                    <SvgIcon icon-class="icon-gouwudai" />
+                  </el-icon>
+                </div>
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink active-class="active" to="/settings">
+                <div class="button">
+                  <el-icon size="24px">
+                    <SvgIcon icon-class="icon-shezhi" />
+                  </el-icon>
+                </div>
+              </RouterLink>
+            </li>
           </ul>
         </div>
       </el-col>
-      <el-col :span="22"
-        ><div class="routerView"><RouterView /></div
-      ></el-col>
+      <el-col :span="22">
+        <div class="routerView">
+          <RouterView />
+        </div>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -45,6 +72,24 @@ const colorMode = useDark()
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+
+    ul {
+      li {
+        padding: 10px 0;
+        .button {
+          padding: 15px;
+          display: flex;
+          border-radius: 20px;
+          // background-color: #000;
+        }
+        .active {
+          .button {
+            background-color: #e3f2fd;
+            border: #61b0e8 dashed 1px;
+          }
+        }
+      }
+    }
   }
 }
 </style>
