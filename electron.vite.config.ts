@@ -5,20 +5,10 @@ import ElementPlus from 'unplugin-element-plus/vite'
 
 export default defineConfig({
   main: {
-    plugins: [
-      externalizeDepsPlugin(),
-      ElementPlus({
-        // options
-      })
-    ]
+    plugins: [externalizeDepsPlugin()]
   },
   preload: {
-    plugins: [
-      externalizeDepsPlugin(),
-      ElementPlus({
-        // options
-      })
-    ]
+    plugins: [externalizeDepsPlugin()]
   },
   renderer: {
     resolve: {

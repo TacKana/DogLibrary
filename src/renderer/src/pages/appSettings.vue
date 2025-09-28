@@ -57,5 +57,11 @@ import BaseLayout from '@renderer/components/BaseLayout.vue'
       border: #61b0e8 dashed 1px;
     }
   }
+  .body {
+    .routerView {
+      height: 100vh;
+      overflow: auto;
+    }
+  }
 }
 </style>

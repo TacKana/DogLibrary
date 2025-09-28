@@ -91,5 +91,9 @@ const colorMode = useDark()
       }
     }
   }
+  .routerView {
+    height: 100vh;
+    overflow: auto;
+  }
 }
 </style>

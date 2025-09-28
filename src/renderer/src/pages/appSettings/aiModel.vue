@@ -1,69 +1,58 @@
 <script lang="ts" setup>
-import { ElCard, ElRow, ElCol, ElSelect, ElOption, ElInput, ElSwitch } from 'element-plus'
-import { reactive, ref } from 'vue'
+import {
+  ElCard,
+  ElRow,
+  ElCol,
+  ElSelect,
+  ElOption,
+  ElInput,
+  ElSwitch,
+  ElButton,
+  ElMessage
+} from 'element-plus'
+import { onMounted, ref, toRaw } from 'vue'
+import { aiProvider } from '../../../../common/types/aiProvider.enum'
+import { AiProviderConfig } from 'src/common/types/userConfig.interface'
 
-enum aiConfig {
-  deepseek = 'DeepSeek官方',
-  alibaba = '阿里云百炼',
-  siliconflow = '硅基流动',
-  volcengine = '火山引擎',
-  newapi = 'NewApi'
-}
+onMounted(async () => {
+  // 通过ipc双向通信拿到配置
+  const { aiConfig } = await window.userConfig.get()
+  // 加载当前的API提供商配置
+  apiProvider.value = aiConfig.apiProvider
+  // 加载API提供商选项
+  aiOptionSelect.value = Object.keys(aiConfig.aiProviderConfig).map((key) => ({ value: key }))
 
-const value = ref(aiConfig.deepseek)
+  // 加载各家api的配置选项
+  aiModelApiSetting.value = aiConfig.aiProviderConfig
+})
+
+const apiProvider = ref<aiProvider>()
 // aiOptionSelect 是一个包含可选AI模型选项的数组，用于应用设置页面的下拉选择。
 // 数组中的每个元素代表一个可选的AI模型配置。
-const aiOptionSelect = [
-  {
-    value: aiConfig.deepseek
-  },
-  {
-    value: aiConfig.alibaba
-  },
-  {
-    value: aiConfig.siliconflow
-  },
-  {
-    value: aiConfig.volcengine
-  },
-  {
-    value: aiConfig.newapi
-  }
-]
+const aiOptionSelect = ref<{ value: string }[]>([])
 
 /**
  * AI模型API设置的响应式状态对象。
  * 用于存储与AI模型集成相关的配置选项和参数。
  * 在组件内动态管理和更新API设置时使用此对象。
  */
-const aiModelApiSetting = reactive({
-  [aiConfig.deepseek]: {
-    apiKey: '',
-    isDeep: false,
-    internetSearch: false
-  },
-  [aiConfig.alibaba]: {
-    apiKey: '',
-    internetSearch: false,
-    modelName: ''
-  },
-  [aiConfig.siliconflow]: {
-    apiKey: '',
-    internetSearch: false,
-    modelName: ''
-  },
-  [aiConfig.volcengine]: {
-    apiKey: '',
-    internetSearch: false,
-    modelName: ''
-  },
-  [aiConfig.newapi]: {
-    baseUrl: '',
-    apiKey: '',
-    internetSearch: false,
-    modelName: ''
+const aiModelApiSetting = ref({} as AiProviderConfig)
+
+async function saveAIconfig(): Promise<void> {
+  const newConfig = {
+    aiConfig: {
+      apiProvider: apiProvider.value!,
+      aiProviderConfig: { ...toRaw(aiModelApiSetting.value!) }
+    }
   }
-})
+
+  const res = await window.userConfig.set(newConfig)
+  console.log(res)
+
+  if (res === true) {
+    ElMessage.success('保存成功')
+  }
+}
 </script>
 <template>
   <div class="aiModel">
@@ -80,7 +69,7 @@ const aiModelApiSetting = reactive({
           </el-col>
           <el-col :span="4">
             <div>
-              <el-select v-model="value" placeholder="Select">
+              <el-select v-model="apiProvider" placeholder="Select">
                 <el-option v-for="item in aiOptionSelect" :key="item.value" :value="item.value" />
               </el-select>
             </div>
@@ -92,17 +81,17 @@ const aiModelApiSetting = reactive({
       <el-card>
         <template #header>
           <div class="card-header">
-            <span>{{ value }}</span>
+            <span>{{ apiProvider }}</span>
           </div>
         </template>
         <el-row :gutter="0">
           <!-- Deepseek官方的api设置 -->
-          <div v-if="value === aiConfig.deepseek" class="body">
+          <div v-if="apiProvider === aiProvider.deepseek" class="body">
             <ul>
               <li><p>DeepSeek官方Api密钥</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.deepseek].apiKey"
+                  v-model="aiModelApiSetting[aiProvider.deepseek].apiKey"
                   placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
                 />
               </li>
@@ -112,24 +101,24 @@ const aiModelApiSetting = reactive({
               <li>
                 <div>
                   深度思考
-                  <el-switch v-model="aiModelApiSetting[aiConfig.deepseek].isDeep" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].isDeep" />
                 </div>
               </li>
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiConfig.deepseek].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].internetSearch" />
                 </div>
               </li>
             </ul>
           </div>
           <!-- 阿里云百炼的api设置 -->
-          <div v-else-if="value === aiConfig.alibaba" class="body">
+          <div v-else-if="apiProvider === aiProvider.alibaba" class="body">
             <ul>
               <li><p>阿里云百炼Api密钥</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.alibaba].apiKey"
+                  v-model="aiModelApiSetting[aiProvider.alibaba].apiKey"
                   placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
                 />
               </li>
@@ -141,25 +130,25 @@ const aiModelApiSetting = reactive({
               <li><p>阿里云百炼模型名称</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.alibaba].modelName"
+                  v-model="aiModelApiSetting[aiProvider.alibaba].modelName"
                   placeholder="请输入模型名称"
                 />
               </li>
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiConfig.alibaba].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.alibaba].internetSearch" />
                 </div>
               </li>
             </ul>
           </div>
           <!-- 硅基流动的api设置 -->
-          <div v-else-if="value === aiConfig.siliconflow" class="body">
+          <div v-else-if="apiProvider === aiProvider.siliconflow" class="body">
             <ul>
               <li><p>硅基流动Api密钥</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.siliconflow].apiKey"
+                  v-model="aiModelApiSetting[aiProvider.siliconflow].apiKey"
                   placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
                 />
               </li>
@@ -171,25 +160,25 @@ const aiModelApiSetting = reactive({
               <li><p>硅基流动模型名称</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.siliconflow].modelName"
+                  v-model="aiModelApiSetting[aiProvider.siliconflow].modelName"
                   placeholder="请输入模型名称"
                 />
               </li>
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiConfig.alibaba].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.siliconflow].internetSearch" />
                 </div>
               </li>
             </ul>
           </div>
           <!-- 火山引擎的api设置 -->
-          <div v-else-if="value === aiConfig.volcengine" class="body">
+          <div v-else-if="apiProvider === aiProvider.volcengine" class="body">
             <ul>
               <li><p>火山引擎的Api密钥</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.volcengine].apiKey"
+                  v-model="aiModelApiSetting[aiProvider.volcengine].apiKey"
                   placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
                 />
               </li>
@@ -199,27 +188,27 @@ const aiModelApiSetting = reactive({
               <li><p>火山引擎的模型名称</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.volcengine].modelName"
+                  v-model="aiModelApiSetting[aiProvider.volcengine].modelName"
                   placeholder="请输入模型名称"
                 />
               </li>
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiConfig.volcengine].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.volcengine].internetSearch" />
                 </div>
               </li>
             </ul>
           </div>
           <!-- NewApi的api设置 -->
-          <div v-else-if="value === aiConfig.newapi" class="body">
+          <div v-else-if="apiProvider === aiProvider.newapi" class="body">
             <ul>
               <li>
                 <p>NewApi接口地址</p>
               </li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.newapi].baseUrl"
+                  v-model="aiModelApiSetting[aiProvider.newapi].baseUrl"
                   placeholder="请输入NewApi的接口地址"
                 ></el-input>
               </li>
@@ -231,7 +220,7 @@ const aiModelApiSetting = reactive({
               <li><p>NewApi的Api密钥</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.newapi].apiKey"
+                  v-model="aiModelApiSetting[aiProvider.newapi].apiKey"
                   placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
                 />
               </li>
@@ -243,19 +232,20 @@ const aiModelApiSetting = reactive({
               <li><p>NewApi的模型名称</p></li>
               <li>
                 <el-input
-                  v-model="aiModelApiSetting[aiConfig.newapi].modelName"
+                  v-model="aiModelApiSetting[aiProvider.newapi].modelName"
                   placeholder="请输入模型名称"
                 />
               </li>
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiConfig.newapi].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.newapi].internetSearch" />
                 </div>
               </li>
             </ul>
           </div>
         </el-row>
+        <template #footer><el-button type="" @click="saveAIconfig">保存配置</el-button></template>
       </el-card>
     </div>
   </div>
