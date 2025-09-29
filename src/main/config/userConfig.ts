@@ -55,6 +55,14 @@ const defaultUserConfig: UserConfig = {
   }
 }
 
+/**
+ * 用户配置管理器，用于初始化、读取、保存和修改用户配置，并通过主进程与渲染进程进行IPC双向通信。
+ *
+ * @remarks
+ * - 管理配置文件的读取与写入，路径基于用户数据目录。
+ * - 提供初始化方法，支持读取现有配置或创建默认配置。
+ * - 导出获取及修改配置的IPC处理函数，实现跨进程调用。
+ */
 export class UserConfigManager {
   private configPath: string
   private currentConfig: UserConfig
