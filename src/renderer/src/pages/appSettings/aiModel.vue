@@ -1,4 +1,25 @@
 <script lang="ts" setup>
+/**
+ * @file aiModel.vue
+ * @description
+ * 本文件主要负责应用设置页面中 AI 模型相关配置的逻辑，包括：
+ * - 定义了当前所选 AI API 提供商和其配置的响应式变量；
+ * - 加载和初始化 AI 提供商与配置参数；
+ * - 提供异步函数用于从主进程获取和保存 AI 配置信息；
+ * - 支持 Element Plus 组件库进行界面组件化展示与交互。
+ *
+ * 主要功能说明：
+ * 1. 通过 `loadAIconfig` 方法，在页面初始化时，异步加载本地存储的 AI 配置信息，填充界面参数及可选项；
+ * 2. 通过 `saveAIconfig` 方法，将用户在页面上更改的 AI 参数配置持久化到本地配置文件，同时给予成功提示反馈。
+ *
+ * 相关类型与依赖：
+ * - 引入了类型枚举 `aiProvider` 和接口 `AiProviderConfig`，限定和约束 AI 提供商及其配置数据结构；
+ * - 使用 Element Plus UI 组件进行页面布局与交互。
+ *
+ * 使用场景：
+ * - 主要用于“应用设置-模型配置”页面，为用户提供直观、便捷的 AI 提供商切换与参数配置功能。
+ */
+
 import {
   ElCard,
   ElRow,
@@ -11,44 +32,51 @@ import {
   ElMessage
 } from 'element-plus'
 import { onMounted, ref, toRaw } from 'vue'
-import { aiProvider } from '../../../../common/types/aiProvider.enum'
+import { aiProvider } from '@common/types/aiProvider.enum'
 import { AiProviderConfig } from 'src/common/types/userConfig.interface'
 
-onMounted(async () => {
+// --- 主要变量 ---
+// 当前所选的 AI API 提供商。
+const apiProvider = ref<aiProvider>()
+// 可选的 AI 提供商列表。
+const aiOptionSelect = ref<{ value: string }[]>([])
+// 各家 AI 提供商的参数配置对象。
+const aiModelApiSetting = ref({} as AiProviderConfig)
+
+/**
+ * 加载 AI 配置的异步函数。
+ * 此函数用于从获取并加载 AI 相关的配置信息，在页面初始化或设置变更时调用。
+ *
+ * @returns {Promise<void>} 无返回值，仅执行配置加载操作。
+ */
+async function loadAIconfig(): Promise<void> {
   // 通过ipc双向通信拿到配置
   const { aiConfig } = await window.userConfig.get()
-  // 加载当前的API提供商配置
+  // 加载当前所选的 AI API 提供商
   apiProvider.value = aiConfig.apiProvider
   // 加载API提供商选项
   aiOptionSelect.value = Object.keys(aiConfig.aiProviderConfig).map((key) => ({ value: key }))
-
   // 加载各家api的配置选项
   aiModelApiSetting.value = aiConfig.aiProviderConfig
-})
-
-const apiProvider = ref<aiProvider>()
-// aiOptionSelect 是一个包含可选AI模型选项的数组，用于应用设置页面的下拉选择。
-// 数组中的每个元素代表一个可选的AI模型配置。
-const aiOptionSelect = ref<{ value: string }[]>([])
+}
+onMounted(() => {
+  loadAIconfig()
+}) // 等待组件组件挂载完成后执行加载配置
 
 /**
- * AI模型API设置的响应式状态对象。
- * 用于存储与AI模型集成相关的配置选项和参数。
- * 在组件内动态管理和更新API设置时使用此对象。
+ * 保存 AI 配置的异步函数。
+ * 该方法将用户设置的 AI 配置进行保存，执行过程中不会阻塞主线程。
+ * 通常用于应用设置页，确保 AI 参数持久化。
  */
-const aiModelApiSetting = ref({} as AiProviderConfig)
-
 async function saveAIconfig(): Promise<void> {
   const newConfig = {
     aiConfig: {
       apiProvider: apiProvider.value!,
-      aiProviderConfig: { ...toRaw(aiModelApiSetting.value!) }
+      aiProviderConfig: { ...toRaw(aiModelApiSetting.value) }
     }
   }
-
   const res = await window.userConfig.set(newConfig)
   console.log(res)
-
   if (res === true) {
     ElMessage.success('保存成功')
   }
@@ -70,7 +98,12 @@ async function saveAIconfig(): Promise<void> {
           <el-col :span="4">
             <div>
               <el-select v-model="apiProvider" placeholder="Select">
-                <el-option v-for="item in aiOptionSelect" :key="item.value" :value="item.value" />
+                <el-option
+                  v-for="item in aiOptionSelect"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.value"
+                />
               </el-select>
             </div>
           </el-col>
@@ -142,7 +175,7 @@ async function saveAIconfig(): Promise<void> {
               </li>
             </ul>
           </div>
-          <!-- 硅基流动的api设置 -->
+          <!--- 硅基流动的api设置 -->
           <div v-else-if="apiProvider === aiProvider.siliconflow" class="body">
             <ul>
               <li><p>硅基流动Api密钥</p></li>
@@ -200,7 +233,7 @@ async function saveAIconfig(): Promise<void> {
               </li>
             </ul>
           </div>
-          <!-- NewApi的api设置 -->
+          <!--- NewApi的api设置 -->
           <div v-else-if="apiProvider === aiProvider.newapi" class="body">
             <ul>
               <li>
@@ -245,21 +278,30 @@ async function saveAIconfig(): Promise<void> {
             </ul>
           </div>
         </el-row>
-        <template #footer><el-button type="" @click="saveAIconfig">保存配置</el-button></template>
+        <template #footer
+          ><el-button type="primary" @click="saveAIconfig">保存配置</el-button></template
+        >
       </el-card>
     </div>
   </div>
 </template>
 <style lang="scss" scoped>
+// 整个AI模型设置页面的外层样式
 .aiModel {
   padding: 15px;
+
+  // 每个卡片之间的下间距
   .card {
     padding-bottom: 15px;
 
+    // 卡片内容区
     .body {
       width: 100%;
+
+      // 配置项列表
       ul {
         li {
+          // 列表项间隔
           padding-bottom: 10px;
         }
       }

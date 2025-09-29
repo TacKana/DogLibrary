@@ -19,5 +19,6 @@
     "volcengine",
     "vueuse",
     "xmlhttp"
-  ]
+  ],
+  "oxc.enable": true
 }
