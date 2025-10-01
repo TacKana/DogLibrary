@@ -32,4 +32,3 @@ $ npm run build:mac
 # Linux 系统
 $ npm run build:linux
 ```
-

@@ -33,7 +33,7 @@ import {
 } from 'element-plus'
 import { onMounted, ref, toRaw } from 'vue'
 import { aiProvider } from '@common/types/aiProvider.enum'
-import { AiProviderConfig } from 'src/common/types/userConfig.interface'
+import { AiProviderConfig } from '@common/types/userConfig.interface'
 
 // --- 主要变量 ---
 // 当前所选的 AI API 提供商。

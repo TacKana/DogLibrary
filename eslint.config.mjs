@@ -24,6 +24,11 @@ export default defineConfig(
   {
     files: ['**/*.{ts,mts,tsx,vue}'],
     rules: {
+      'no-var': 1, // 建议使用 let/const 替代 var
+      'prefer-const': 1,// 建议使用 const 声明不变的变量
+      'no-implicit-coercion': [1, { allow: ['!!'] }],// 禁止隐式类型转换
+       'eqeqeq': [2, 'always', { null: 'ignore' }], // 强制使用全等 (===) 运算符
+      'linebreak-style': ['error', 'unix'],
       'vue/require-default-prop': 'off',
       'vue/multi-word-component-names': 'off',
       'vue/block-lang': [

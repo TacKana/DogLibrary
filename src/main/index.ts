@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { UserConfigManager } from './config/userConfig'
+import { HttpService } from './httpService/httpService'
 
 function createWindow(): void {
   // 创建浏览器窗口。
@@ -51,7 +52,10 @@ app.whenReady().then(() => {
   })
 
   // 加载用户设置模块
-  new UserConfigManager().initialize()
+  const userConfig = new UserConfigManager()
+  userConfig.initialize()
+  //加载http服务
+ /*  const httpService = */ new HttpService(userConfig.getConfig().network).initialize()
 
   createWindow()
 

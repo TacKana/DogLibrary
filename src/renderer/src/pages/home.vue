@@ -1,11 +1,31 @@
 <script setup lang="ts">
 import autosize from 'autosize'
-import { onMounted, useTemplateRef } from 'vue'
-import { ElButton } from 'element-plus'
-
+import { onMounted, ref, useTemplateRef } from 'vue'
+import { ElButton, ElMessage } from 'element-plus'
+import { tr } from 'element-plus/es/locales.mjs'
+// --- 多行文本框高度自适应 ---
 const textarea = useTemplateRef('textarea')
 onMounted(() => {
   autosize(textarea.value!)
+})
+// --- 多行文本框高度自适应 END ---
+
+async function switchHttp() {
+  if (await window.httpService.isRunning()) {
+    window.httpService.stop()
+    ElMessage.success('已停止HTTP服务')
+    isRunning.value.boolean =true
+    isRunning.value.text="启动服务"
+    return
+  }
+  window.httpService.start()
+  ElMessage.success('已开启HTTP服务')
+  isRunning.value.boolean =false
+  isRunning.value.text="停止服务"
+}
+const isRunning=ref({
+  boolean:true,
+  text:"启动服务"
 })
 </script>
 
@@ -17,7 +37,7 @@ onMounted(() => {
         <p>服务状态</p>
         <p>未启动</p>
       </div>
-      <div class="right"><el-button type="success" plain>启动服务</el-button></div>
+      <div class="right"><el-button type="success" :plain="isRunning.boolean" @click="switchHttp">{{isRunning.text}}</el-button></div>
     </div>
     <div class="allocation">
       <div class="title">
@@ -27,7 +47,7 @@ onMounted(() => {
 
       <div class="textarea">
         <textarea ref="textarea" readonly>
- [{
+[{
     "name": "ZE题库(自建版)",
     "homepage": "http://zerror.neoregion.cn",
     "url": "http://localhost:5233/query",
@@ -40,8 +60,7 @@ onMounted(() => {
         "type": "${type}"
     },
     "handler": "return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.data]"
-}] </textarea
-        >
+}] </textarea>
       </div>
     </div>
   </div>
