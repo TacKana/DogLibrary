@@ -2,31 +2,39 @@
 import autosize from 'autosize'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { ElButton, ElMessage } from 'element-plus'
-import { tr } from 'element-plus/es/locales.mjs'
 // --- 多行文本框高度自适应 ---
+//#region
 const textarea = useTemplateRef('textarea')
 onMounted(() => {
   autosize(textarea.value!)
 })
+//#endregion
 // --- 多行文本框高度自适应 END ---
 
-async function switchHttp() {
+// --- 控制HTTP服务 ---
+//#region
+const isRunning = ref({
+  running: true,
+  text: '启动服务',
+})
+/**
+ * 切换http请求方式
+ */
+async function switchHttp(): Promise<void> {
   if (await window.httpService.isRunning()) {
-    window.httpService.stop()
+    await window.httpService.stop()
     ElMessage.success('已停止HTTP服务')
-    isRunning.value.boolean =true
-    isRunning.value.text="启动服务"
+    isRunning.value.running = true
+    isRunning.value.text = '启动服务'
     return
   }
-  window.httpService.start()
+  await window.httpService.start()
   ElMessage.success('已开启HTTP服务')
-  isRunning.value.boolean =false
-  isRunning.value.text="停止服务"
+  isRunning.value.running = false
+  isRunning.value.text = '停止服务'
 }
-const isRunning=ref({
-  boolean:true,
-  text:"启动服务"
-})
+//#endregion
+// --- 控制HTTP服务 END ---
 </script>
 
 <template>
@@ -37,7 +45,11 @@ const isRunning=ref({
         <p>服务状态</p>
         <p>未启动</p>
       </div>
-      <div class="right"><el-button type="success" :plain="isRunning.boolean" @click="switchHttp">{{isRunning.text}}</el-button></div>
+      <div class="right">
+        <el-button type="success" :plain="isRunning.running" @click="switchHttp">{{
+          isRunning.text
+        }}</el-button>
+      </div>
     </div>
     <div class="allocation">
       <div class="title">
@@ -48,10 +60,10 @@ const isRunning=ref({
       <div class="textarea">
         <textarea ref="textarea" readonly>
 [{
-    "name": "ZE题库(自建版)",
-    "homepage": "http://zerror.neoregion.cn",
-    "url": "http://localhost:5233/query",
-    "method": "get",
+    "name": "狗库",
+    "homepage": "http://dogku.xuxo.top",
+    "url": "http://localhost:5233/search",
+    "method": "post",
     "type": "GM_xmlhttpRequest",
     "contentType": "json",
     "data": {
@@ -60,7 +72,8 @@ const isRunning=ref({
         "type": "${type}"
     },
     "handler": "return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.data]"
-}] </textarea>
+}] </textarea
+        >
       </div>
     </div>
   </div>

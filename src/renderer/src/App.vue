@@ -6,8 +6,6 @@ import SvgIcon from './components/SvgIcon.vue'
 
 // 深色模式切换按钮
 const colorMode = useDark()
-
-
 </script>
 
 <template>

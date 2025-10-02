@@ -29,7 +29,7 @@ import {
   ElInput,
   ElSwitch,
   ElButton,
-  ElMessage
+  ElMessage,
 } from 'element-plus'
 import { onMounted, ref, toRaw } from 'vue'
 import { aiProvider } from '@common/types/aiProvider.enum'
@@ -49,7 +49,7 @@ const aiModelApiSetting = ref({} as AiProviderConfig)
  *
  * @returns {Promise<void>} 无返回值，仅执行配置加载操作。
  */
-async function loadAIconfig(): Promise<void> {
+async function loadconfig(): Promise<void> {
   // 通过ipc双向通信拿到配置
   const { aiConfig } = await window.userConfig.get()
   // 加载当前所选的 AI API 提供商
@@ -60,7 +60,7 @@ async function loadAIconfig(): Promise<void> {
   aiModelApiSetting.value = aiConfig.aiProviderConfig
 }
 onMounted(() => {
-  loadAIconfig()
+  loadconfig()
 }) // 等待组件组件挂载完成后执行加载配置
 
 /**
@@ -72,8 +72,8 @@ async function saveAIconfig(): Promise<void> {
   const newConfig = {
     aiConfig: {
       apiProvider: apiProvider.value!,
-      aiProviderConfig: { ...toRaw(aiModelApiSetting.value) }
-    }
+      aiProviderConfig: { ...toRaw(aiModelApiSetting.value) },
+    },
   }
   const res = await window.userConfig.set(newConfig)
   console.log(res)

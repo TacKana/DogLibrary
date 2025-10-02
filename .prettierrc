@@ -1,0 +1,10 @@
+
+{
+"printWidth": 100,
+"endOfLine": "lf",
+"semi": false,
+"singleQuote": true,
+"trailingComma": "all",
+"bracketSpacing": true,
+"spaceBeforeFunctionParen" : true
+}

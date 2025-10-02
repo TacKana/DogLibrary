@@ -16,8 +16,8 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      contextIsolation: true
-    }
+      contextIsolation: true,
+    },
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -40,7 +40,8 @@ function createWindow(): void {
 
 // 当 Electron 完成初始化并准备好创建浏览器窗口时会调用此方法。
 // 某些 API 只能在此事件发生后才能使用。
-app.whenReady().then(() => {
+
+app.whenReady().then(async () => {
   // 为 Windows 设置应用用户模型 ID
   electronApp.setAppUserModelId('com.electron')
   // 在开发环境中，默认通过 F12 键打开或关闭开发者工具
@@ -53,9 +54,11 @@ app.whenReady().then(() => {
 
   // 加载用户设置模块
   const userConfig = new UserConfigManager()
-  userConfig.initialize()
+  console.log(await userConfig.get())
+
   //加载http服务
- /*  const httpService = */ new HttpService(userConfig.getConfig().network).initialize()
+  const httpService = new HttpService(async () => (await userConfig.get()).network)
+  await httpService.initialize()
 
   createWindow()
 
