@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import express, { Express } from 'express'
 import { Server } from 'http'
 import { NetworkConfig } from '../../common/types/userConfig.interface'
+import { searchSchema } from './schema/search.schema'
 
 /**
  * 负责管理 Express HTTP 服务器的生命周期与 IPC 通信。
@@ -40,7 +41,14 @@ export class HttpService {
    */
   private registerRoutes(): void {
     this.app.post('/search', (req, res) => {
-      res.json(req.body)
+      try {
+        const data = searchSchema.parse(req.body)
+        console.log(data)
+        res.json({ code: 1, data })
+      } catch (error) {
+        // console.log(error)
+        res.status(400).json({ code: 0, msg: error })
+      }
     })
   }
 

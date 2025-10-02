@@ -5,23 +5,23 @@ import ElementPlus from 'unplugin-element-plus/vite'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
   },
   renderer: {
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
-        '@common': resolve(__dirname, 'src/common')
-      }
+        '@common': resolve(__dirname, 'src/common'),
+      },
     },
     plugins: [
       vue(),
       ElementPlus({
         // options
-      })
-    ]
-  }
+      }),
+    ],
+  },
 })
