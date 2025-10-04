@@ -14,12 +14,7 @@ const colorMode = useDark()
       <el-col :span="2">
         <div class="sidebar">
           <div class="top">
-            <el-switch
-              v-model="colorMode"
-              size="large"
-              :active-action-icon="MoonNight"
-              :inactive-action-icon="Sunset"
-            />
+            <el-switch v-model="colorMode" size="large" :active-action-icon="MoonNight" :inactive-action-icon="Sunset" />
           </div>
           <ul>
             <li>
@@ -54,7 +49,12 @@ const colorMode = useDark()
       </el-col>
       <el-col :span="22">
         <div class="routerView">
-          <RouterView />
+          <router-view v-slot="{ Component, route }">
+            <keep-alive>
+              <component :is="Component" v-if="route.meta.keepAlive" />
+            </keep-alive>
+            <component :is="Component" v-if="!route.meta.keepAlive" />
+          </router-view>
         </div>
       </el-col>
     </el-row>

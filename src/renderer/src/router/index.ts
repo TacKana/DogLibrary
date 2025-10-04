@@ -14,11 +14,13 @@ const router = createRouter({
     { path: '/', redirect: '/home' },
     {
       path: '/home',
-      component: Home
+      component: Home,
+      name: 'Home',
+      meta: { keepAlive: true }, // 控制是否缓存
     },
     {
       path: '/cache',
-      component: TopicCache
+      component: TopicCache,
     },
     {
       path: '/settings',
@@ -27,19 +29,19 @@ const router = createRouter({
         { path: '', redirect: '/settings/aimodel' },
         {
           path: 'aimodel',
-          component: AiModel
+          component: AiModel,
         },
         {
           path: 'network',
-          component: Network
-        }
+          component: Network,
+        },
         // {
         //   path: 'other',
         //   component: Other
         // }
-      ]
-    }
-  ]
+      ],
+    },
+  ],
 })
 
 export default router

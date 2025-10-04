@@ -9,14 +9,10 @@ import BaseLayout from '@renderer/components/BaseLayout.vue'
         <div class="list">
           <ul>
             <li>
-              <RouterLink to="/settings/aimodel" active-class="active"
-                ><div class="button">AI模型</div></RouterLink
-              >
+              <RouterLink to="/settings/aimodel" active-class="active"><div class="button">AI模型</div></RouterLink>
             </li>
             <li>
-              <RouterLink to="/settings/network" active-class="active"
-                ><div class="button">网络</div></RouterLink
-              >
+              <RouterLink to="/settings/network" active-class="active"><div class="button">网络</div></RouterLink>
             </li>
             <!-- <li><RouterLink to="/settings/other">其他</RouterLink></li> -->
           </ul>

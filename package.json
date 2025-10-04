@@ -28,6 +28,7 @@
     "electron-updater": "^6.3.9",
     "element-plus": "^2.11.3",
     "express": "^5.1.0",
+    "openai": "^6.1.0",
     "vue-router": "4",
     "zod": "^4.1.11"
   },

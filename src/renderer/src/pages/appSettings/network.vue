@@ -14,17 +14,7 @@
  * 用户通过界面修改网络相关设置，并可一键保存当前配置。
  */
 import { NetworkConfig } from '@common/types/userConfig.interface'
-import {
-  ElCard,
-  ElRow,
-  ElCol,
-  ElSwitch,
-  ElText,
-  ElInput,
-  ElAlert,
-  ElButton,
-  ElMessage
-} from 'element-plus'
+import { ElCard, ElRow, ElCol, ElSwitch, ElText, ElInput, ElAlert, ElButton, ElMessage } from 'element-plus'
 import { ref, toRaw } from 'vue'
 import { onMounted } from 'vue'
 
@@ -83,12 +73,7 @@ async function saveNetworkConfig(): Promise<void> {
                 <el-input v-model="networkOption.port" type="number" />
               </div>
             </el-col>
-            <el-alert
-              title="端口范围：1024~65535，且只能为正整数"
-              type="warning"
-              :closable="false"
-              show-icon
-            />
+            <el-alert title="端口范围：1024~65535，且只能为正整数" type="warning" :closable="false" show-icon />
           </el-row>
         </div>
 
@@ -105,9 +90,7 @@ async function saveNetworkConfig(): Promise<void> {
             </el-col>
           </el-row>
         </div>
-        <template #footer
-          ><el-button type="primary" @click="saveNetworkConfig">保存配置</el-button></template
-        >
+        <template #footer><el-button type="primary" @click="saveNetworkConfig">保存配置</el-button></template>
       </el-card>
     </div>
   </div>

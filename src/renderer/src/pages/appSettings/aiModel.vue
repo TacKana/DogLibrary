@@ -20,17 +20,7 @@
  * - 主要用于“应用设置-模型配置”页面，为用户提供直观、便捷的 AI 提供商切换与参数配置功能。
  */
 
-import {
-  ElCard,
-  ElRow,
-  ElCol,
-  ElSelect,
-  ElOption,
-  ElInput,
-  ElSwitch,
-  ElButton,
-  ElMessage,
-} from 'element-plus'
+import { ElCard, ElRow, ElCol, ElSelect, ElOption, ElInput, ElSwitch, ElButton, ElMessage } from 'element-plus'
 import { onMounted, ref, toRaw } from 'vue'
 import { aiProvider } from '@common/types/aiProvider.enum'
 import { AiProviderConfig } from '@common/types/userConfig.interface'
@@ -98,12 +88,7 @@ async function saveAIconfig(): Promise<void> {
           <el-col :span="4">
             <div>
               <el-select v-model="apiProvider" placeholder="Select">
-                <el-option
-                  v-for="item in aiOptionSelect"
-                  :key="item.value"
-                  :value="item.value"
-                  :label="item.value"
-                />
+                <el-option v-for="item in aiOptionSelect" :key="item.value" :value="item.value" :label="item.value" />
               </el-select>
             </div>
           </el-col>
@@ -123,10 +108,7 @@ async function saveAIconfig(): Promise<void> {
             <ul>
               <li><p>DeepSeek官方Api密钥</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.deepseek].apiKey"
-                  placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.deepseek].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
               </li>
               <li>
                 <a href="https://platform.deepseek.com/usage" target="_blank"><p>获取Api密钥</p></a>
@@ -150,22 +132,14 @@ async function saveAIconfig(): Promise<void> {
             <ul>
               <li><p>阿里云百炼Api密钥</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.alibaba].apiKey"
-                  placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.alibaba].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
               </li>
               <li>
-                <a href="https://bailian.console.aliyun.com/#/home" target="_blank"
-                  ><p>获取Api密钥</p></a
-                >
+                <a href="https://bailian.console.aliyun.com/#/home" target="_blank"><p>获取Api密钥</p></a>
               </li>
               <li><p>阿里云百炼模型名称</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.alibaba].modelName"
-                  placeholder="请输入模型名称"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.alibaba].modelName" placeholder="请输入模型名称" />
               </li>
               <li>
                 <div>
@@ -180,22 +154,14 @@ async function saveAIconfig(): Promise<void> {
             <ul>
               <li><p>硅基流动Api密钥</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.siliconflow].apiKey"
-                  placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.siliconflow].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
               </li>
               <li>
-                <a href="https://cloud.siliconflow.cn/me/account/ak" target="_blank"
-                  ><p>获取Api密钥</p></a
-                >
+                <a href="https://cloud.siliconflow.cn/me/account/ak" target="_blank"><p>获取Api密钥</p></a>
               </li>
               <li><p>硅基流动模型名称</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.siliconflow].modelName"
-                  placeholder="请输入模型名称"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.siliconflow].modelName" placeholder="请输入模型名称" />
               </li>
               <li>
                 <div>
@@ -210,20 +176,14 @@ async function saveAIconfig(): Promise<void> {
             <ul>
               <li><p>火山引擎的Api密钥</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.volcengine].apiKey"
-                  placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.volcengine].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
               </li>
               <li>
                 <a href="https://console.volcengine.com/ark" target="_blank"><p>获取Api密钥</p></a>
               </li>
               <li><p>火山引擎的模型名称</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.volcengine].modelName"
-                  placeholder="请输入模型名称"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.volcengine].modelName" placeholder="请输入模型名称" />
               </li>
               <li>
                 <div>
@@ -240,34 +200,21 @@ async function saveAIconfig(): Promise<void> {
                 <p>NewApi接口地址</p>
               </li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.newapi].baseUrl"
-                  placeholder="请输入NewApi的接口地址"
-                ></el-input>
+                <el-input v-model="aiModelApiSetting[aiProvider.newapi].baseUrl" placeholder="请输入NewApi的接口地址"></el-input>
               </li>
               <li>
-                <a href="https://docs.newapi.pro/api/openai-chat/" target="_blank"
-                  ><p>获取NewApi地址</p></a
-                >
+                <a href="https://docs.newapi.pro/api/openai-chat/" target="_blank"><p>获取NewApi地址</p></a>
               </li>
               <li><p>NewApi的Api密钥</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.newapi].apiKey"
-                  placeholder="请输入API密钥 (YOUR_API_KEY_HERE)"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.newapi].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
               </li>
               <li>
-                <a href="https://docs.newapi.pro/guide/console/api-token/" target="_blank"
-                  ><p>获取Api密钥</p></a
-                >
+                <a href="https://docs.newapi.pro/guide/console/api-token/" target="_blank"><p>获取Api密钥</p></a>
               </li>
               <li><p>NewApi的模型名称</p></li>
               <li>
-                <el-input
-                  v-model="aiModelApiSetting[aiProvider.newapi].modelName"
-                  placeholder="请输入模型名称"
-                />
+                <el-input v-model="aiModelApiSetting[aiProvider.newapi].modelName" placeholder="请输入模型名称" />
               </li>
               <li>
                 <div>
@@ -278,9 +225,7 @@ async function saveAIconfig(): Promise<void> {
             </ul>
           </div>
         </el-row>
-        <template #footer
-          ><el-button type="primary" @click="saveAIconfig">保存配置</el-button></template
-        >
+        <template #footer><el-button type="primary" @click="saveAIconfig">保存配置</el-button></template>
       </el-card>
     </div>
   </div>

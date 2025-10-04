@@ -11,24 +11,26 @@ onMounted(() => {
 //#endregion
 // --- 多行文本框高度自适应 END ---
 
-// --- 控制HTTP服务 ---
+// --- 控制HTTP服务和大模型API服务 ---
 //#region
 const isRunning = ref({
   running: true,
   text: '启动服务',
 })
 /**
- * 切换http请求方式
+ * 控制HTTP服务和大模型API服务
  */
-async function switchHttp(): Promise<void> {
+async function switchServer(): Promise<void> {
   if (await window.httpService.isRunning()) {
     await window.httpService.stop()
-    ElMessage.success('已停止HTTP服务')
+    await window.aiManager.unload()
+    ElMessage.success('已停止服务')
     isRunning.value.running = true
     isRunning.value.text = '启动服务'
     return
   }
   await window.httpService.start()
+  await window.aiManager.load()
   ElMessage.success('已开启HTTP服务')
   isRunning.value.running = false
   isRunning.value.text = '停止服务'
@@ -46,9 +48,7 @@ async function switchHttp(): Promise<void> {
         <p>未启动</p>
       </div>
       <div class="right">
-        <el-button type="success" :plain="isRunning.running" @click="switchHttp">{{
-          isRunning.text
-        }}</el-button>
+        <el-button type="success" :plain="isRunning.running" @click="switchServer">{{ isRunning.text }}</el-button>
       </div>
     </div>
     <div class="allocation">

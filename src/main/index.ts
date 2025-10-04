@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { UserConfigManager } from './config/userConfig'
 import { HttpService } from './httpService/httpService'
+import { AIManager } from './ai/aiManager'
 
 function createWindow(): void {
   // 创建浏览器窗口。
@@ -59,7 +60,8 @@ app.whenReady().then(async () => {
   //加载http服务
   const httpService = new HttpService(async () => (await userConfig.get()).network)
   await httpService.initialize()
-
+  const aiManager = new AIManager(async () => (await userConfig.get()).aiConfig)
+  await aiManager.initialize()
   createWindow()
 
   app.on('activate', function () {
