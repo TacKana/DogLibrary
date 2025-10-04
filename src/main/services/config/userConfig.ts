@@ -1,10 +1,30 @@
 //  处理应用配置
 import { app, ipcMain } from 'electron'
 import path from 'path'
-import { aiProvider } from '../../common/types/aiProvider.enum'
+import { aiProvider } from '../../../common/types/aiProvider.enum'
 import fs from 'fs'
-import { UserConfig } from '../../common/types/userConfig.interface'
+import { UserConfig } from '../../../common/types/userConfig.interface'
 
+/**
+ * 用户配置管理器
+ *
+ * @remarks
+ * 负责 Electron 应用的用户配置文件全生命周期管理：
+ * - 在 `userData` 目录下维护 `user-config.json`
+ * - 提供默认配置模板，支持 AI 服务商（deepseek、alibaba、siliconflow、volcengine、newapi）与网络端口设置
+ * - 通过 `ipcMain.handle` 暴露 `get-userConfig` / `set-userConfig` 双向通信通道
+ * - 所有读写均做深拷贝，避免外部引用污染
+ * - 文件异常时自动回退至默认配置并重写文件
+ *
+ * @example
+ * ```ts
+ * const manager = new UserConfigManager();
+ * const config  = await manager.get();      // 读取当前配置
+ * await manager.set({ network: { port: 8080 } }); // 局部更新
+ * ```
+ *
+ * @public
+ */
 export class UserConfigManager {
   private readonly configPath: string
   private readonly defaultUserConfig: UserConfig
@@ -60,9 +80,8 @@ export class UserConfigManager {
         isLAN: false,
       },
     }
-    this.initialize()
   }
-  private initialize(): void {
+  async initialize(): Promise<void> {
     // 获取配置的ipc双向通信
     ipcMain.handle('get-userConfig', () => {
       return this.get()

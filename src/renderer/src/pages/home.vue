@@ -23,14 +23,12 @@ const isRunning = ref({
 async function switchServer(): Promise<void> {
   if (await window.httpService.isRunning()) {
     await window.httpService.stop()
-    await window.aiManager.unload()
     ElMessage.success('已停止服务')
     isRunning.value.running = true
     isRunning.value.text = '启动服务'
     return
   }
   await window.httpService.start()
-  await window.aiManager.load()
   ElMessage.success('已开启HTTP服务')
   isRunning.value.running = false
   isRunning.value.text = '停止服务'

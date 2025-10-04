@@ -11,9 +11,5 @@ declare global {
       stop: () => Promise<void>
       isRunning: () => Promise<boolean>
     }
-    aiManager: {
-      load: () => Promise<void>
-      unload: () => Promise<void>
-    }
   }
 }

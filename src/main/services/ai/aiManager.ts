@@ -1,29 +1,28 @@
 import { ChatCompletionMessageParam } from 'openai/resources'
-import { aiProvider } from '../../common/types/aiProvider.enum'
-import { AiConfig, AlibabaConfig, DeepseekConfig, NewapiConfig, SiliconflowConfig, VolcengineConfig } from '../../common/types/userConfig.interface'
+import { aiProvider } from '../../../common/types/aiProvider.enum'
+import { AiConfig, AlibabaConfig, DeepseekConfig, NewapiConfig, SiliconflowConfig, VolcengineConfig } from '../../../common/types/userConfig.interface'
 import OpenAI from 'openai'
-import { ipcMain } from 'electron'
 
 /**
- * AIManager – 统一 AI 服务调度器
- *
- * @description
- * 负责在运行时动态加载/卸载不同 AI 提供商（DeepSeek、BaiLian、Siliconflow、Volcengine、Newapi）。
- * 通过 IPC 暴露 `load-AIManager` / `unload-AIManager` 两条通道，供渲染进程按需激活或释放资源。
- * 内部维护一个 `AIAdapter` 实例，所有聊天请求最终转发给当前激活的提供商。
+ * AIManager 负责按需异步加载并管理 AI 服务提供器。
  *
  * @remarks
- * - 构造函数接收一个异步配置读取函数，确保在真正加载前拿到最新配置。
- * - `initialize()` 会清理同名 IPC 句柄，防止重复注册。
- * - 若配置中指定的提供商未被支持，将抛出错误。
- * - 卸载时会调用底层适配器的 `unload()` 方法，并清空引用。
+ * 1. 构造函数接收一个返回 `AiConfig` 的异步函数，用于运行时获取最新配置。
+ * 2. 调用 `load()` 后，根据 `config.apiProvider` 字段实例化对应的 AI 适配器（DeepSeek、BaiLian、Siliconflow、Volcengine、Newapi），
+ *    并将其缓存到 `activeProvider`。
+ * 3. 通过 `chat(messages)` 方法，将符合 OpenAI 格式的对话消息转发给当前激活的提供器，并返回完整回复。
+ * 4. 调用 `unload()` 可释放当前提供器资源，并将 `activeProvider` 置空。
  *
  * @example
  * ```ts
- * const ai = new AIManager(() => store.get('aiConfig'));
- * await ai.initialize();
- * const reply = await ai.chat([{ role: 'user', content: '你好' }]);
+ * const getCfg = async () => (await readConfig()).ai;
+ * const mgr = new AIManager(getCfg);
+ * await mgr.load();
+ * const reply = await mgr.chat([{ role: 'user', content: '你好' }]);
+ * await mgr.unload();
  * ```
+ *
+ * @public
  */
 export class AIManager {
   private config!: AiConfig
@@ -32,17 +31,6 @@ export class AIManager {
 
   constructor(getConfig: () => Promise<AiConfig>) {
     this.getConfig = getConfig
-  }
-  async initialize(): Promise<void> {
-    ipcMain.removeHandler('load-AIManager')
-    ipcMain.removeHandler('unload-AIManager')
-
-    ipcMain.handle('load-AIManager', () => {
-      return this.load()
-    })
-    ipcMain.handle('unload-AIManager', () => {
-      return this.unload()
-    })
   }
   /**
    * 异步加载并初始化 AI 服务提供器。
@@ -58,7 +46,7 @@ export class AIManager {
    *
    * @returns {Promise<void>} 完成加载后返回的 Promise，无额外值。
    */
-  private async load(): Promise<void> {
+  async load(): Promise<void> {
     this.config = await this.getConfig()
     const cfg = this.config.aiProviderConfig
     switch (this.config.apiProvider) {
@@ -94,7 +82,7 @@ export class AIManager {
     if (!this.activeProvider) throw new Error(`AIManager未初始化或不支持的服务提供者`)
     return this.activeProvider.chat(messages)
   }
-  private async unload(): Promise<void> {
+  async unload(): Promise<void> {
     if (this.activeProvider) {
       this.activeProvider.unload()
       this.activeProvider = undefined

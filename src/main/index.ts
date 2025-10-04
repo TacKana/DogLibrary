@@ -2,9 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { UserConfigManager } from './config/userConfig'
-import { HttpService } from './httpService/httpService'
-import { AIManager } from './ai/aiManager'
+import { ServiceManager } from './services/ServiceManager'
 
 function createWindow(): void {
   // 创建浏览器窗口。
@@ -49,25 +47,18 @@ app.whenReady().then(async () => {
   // 并且在生产环境中忽略 CommandOrControl + R 组合键。
   // 参见https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
 
+  const serviceManager = new ServiceManager()
+  serviceManager.init()
+
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
-  // 加载用户设置模块
-  const userConfig = new UserConfigManager()
-  console.log(await userConfig.get())
-
-  //加载http服务
-  const httpService = new HttpService(async () => (await userConfig.get()).network)
-  await httpService.initialize()
-  const aiManager = new AIManager(async () => (await userConfig.get()).aiConfig)
-  await aiManager.initialize()
-  createWindow()
 
   app.on('activate', function () {
     // 在 macOS 上，当点击程序坞图标且没有其他窗口打开时，在应用中重新创建一个窗口是常见的做法。
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+  createWindow()
 })
 
 // 当所有窗口都关闭时退出，但 macOS 系统除外。在该系统上，应用程序及其菜单栏通常会保持活跃状态，直到用户通过 Cmd + Q 明确退出。

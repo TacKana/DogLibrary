@@ -1,8 +1,10 @@
 import { ipcMain } from 'electron'
 import express, { Express } from 'express'
 import { Server } from 'http'
-import { NetworkConfig } from '../../common/types/userConfig.interface'
+import { NetworkConfig } from '../../../common/types/userConfig.interface'
 import { searchSchema } from './schema/search.schema'
+import { UserConfigManager } from '../config/userConfig'
+import { AIManager } from '../ai/aiManager'
 
 /**
  * 负责管理 Express HTTP 服务器的生命周期与 IPC 通信。
@@ -20,18 +22,17 @@ import { searchSchema } from './schema/search.schema'
  * // ipcRenderer.invoke('start-HttpService');
  * ```
  */
-export class HttpService {
+export class HttpManager {
   private app: Express
   private server: Server | null = null
   private config!: NetworkConfig
-  private getNetworkConfig: () => Promise<NetworkConfig>
 
-  constructor(getNetworkConfig: () => Promise<NetworkConfig>) {
+  constructor(
+    private userConfigManager: UserConfigManager,
+    private aIManager: AIManager,
+  ) {
     this.app = express()
-    this.server = null
-    this.app.use(express.json())
     this.registerRoutes()
-    this.getNetworkConfig = getNetworkConfig
   }
 
   /**
@@ -70,14 +71,14 @@ export class HttpService {
    * ```
    */
   private async start(): Promise<void> {
-    this.config = await this.getNetworkConfig()
+    this.config = (await this.userConfigManager.get()).network
     if (this.server) {
-      console.log(`服务器已在端口 ${this.config.port} 上运行`)
+      console.log(`HTTP 服务已经在端口 ${this.config.port} 上运行`)
       return
     }
-
+    this.aIManager.load()
     this.server = this.app.listen(this.config.port, async () => {
-      console.log(`HTTP 服务器已在http://localhost:${this.config.port} 上启动`)
+      console.log(`HTTP 服务已在http://localhost:${this.config.port} 上启动`)
     })
   }
 
@@ -96,8 +97,9 @@ export class HttpService {
 
     await new Promise<void>((resolve) => {
       this.server!.close(() => {
-        console.log('HTTP服务器已停止')
+        this.aIManager.unload()
         this.server = null
+        console.log('HTTP服务器已停止')
         resolve()
       })
     })

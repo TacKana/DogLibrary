@@ -11,10 +11,5 @@ const httpService = {
   stop: () => ipcRenderer.invoke('stop-HttpService'),
   isRunning: (): Promise<boolean> => ipcRenderer.invoke('isRunning'),
 }
-const aiManager = {
-  load: () => ipcRenderer.invoke('load-AIManager'),
-  unload: () => ipcRenderer.invoke('unload-AIManager'),
-}
 contextBridge.exposeInMainWorld('userConfig', userConfig)
 contextBridge.exposeInMainWorld('httpService', httpService)
-contextBridge.exposeInMainWorld('aiManager', aiManager)
