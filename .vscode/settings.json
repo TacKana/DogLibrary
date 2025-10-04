@@ -8,17 +8,7 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": [
-    "aimodel",
-    "autosize",
-    "deepseek",
-    "elrow",
-    "newapi",
-    "siliconflow",
-    "unplugin",
-    "volcengine",
-    "vueuse",
-    "xmlhttp"
-  ],
-  "oxc.enable": true
+  "cSpell.words": ["aimodel", "autosize", "deepseek", "elrow", "newapi", "siliconflow", "unplugin", "volcengine", "vueuse", "xmlhttp"],
+  "oxc.enable": true,
+  "files.eol": "\n"
 }
