@@ -99,6 +99,18 @@ export class UserConfigManager {
       this.saveConfigFile(this.defaultUserConfig)
     }
   }
+  /**
+   * 将用户配置对象持久化到配置文件。
+   *
+   * @param config - 待保存的完整用户配置对象。
+   * @returns 无返回值的 Promise，当写入完成或失败时决议。
+   * @throws 当文件写入过程中发生错误时，Promise 会被拒绝并携带相应异常。
+   *
+   * @example
+   * ```ts
+   * await saveConfigFile({ theme: 'dark', lang: 'zh-CN' });
+   * ```
+   */
   private async saveConfigFile(config: UserConfig): Promise<void> {
     fs.promises.writeFile(this.configPath, JSON.stringify(config, null, 2), 'utf8')
   }

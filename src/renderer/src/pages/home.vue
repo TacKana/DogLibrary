@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import autosize from 'autosize'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { ElButton, ElMessage } from 'element-plus'
+import { UserConfig } from '@common/types/userConfig.interface'
 // --- 多行文本框高度自适应 ---
 //#region
 const textarea = useTemplateRef('textarea')
@@ -17,9 +18,6 @@ const isRunning = ref({
   running: true,
   text: '启动服务',
 })
-/**
- * 控制HTTP服务和大模型API服务
- */
 async function switchServer(): Promise<void> {
   if (await window.httpService.isRunning()) {
     await window.httpService.stop()
@@ -35,6 +33,38 @@ async function switchServer(): Promise<void> {
 }
 //#endregion
 // --- 控制HTTP服务 END ---
+
+// --- 获取配置 ---
+/**
+ * 加载网络配置的异步函数。
+ * 用于从相关数据源获取并更新当前网络配置信息。
+ *
+ * @returns {Promise<void>} 无返回值，异步执行网络配置加载操作。
+ */
+const config = ref<UserConfig>()
+const ocsConfig = computed(() => [
+  {
+    name: '狗库',
+    homepage: 'http://dogku.xuxo.top',
+    url: `http://localhost:${config.value?.network.port}/search`,
+    method: 'post',
+    type: 'GM_xmlhttpRequest',
+    contentType: 'json',
+    data: {
+      title: '${title}',
+      options: '${options}',
+      type: '${type}',
+    },
+    handler: 'return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.anwser]',
+  },
+])
+async function loadNetworkConfig(): Promise<void> {
+  config.value = await window.userConfig.get()
+}
+onMounted(() => {
+  loadNetworkConfig()
+})
+// --- 获取配置 END ---
 </script>
 
 <template>
@@ -43,7 +73,8 @@ async function switchServer(): Promise<void> {
     <div class="serviceStatus">
       <div class="left">
         <p>服务状态</p>
-        <p>未启动</p>
+        <p v-show="!isRunning.running" style="color: green">已启动</p>
+        <p v-show="isRunning.running">未启动</p>
       </div>
       <div class="right">
         <el-button type="success" :plain="isRunning.running" @click="switchServer">{{ isRunning.text }}</el-button>
@@ -56,22 +87,7 @@ async function switchServer(): Promise<void> {
       </div>
 
       <div class="textarea">
-        <textarea ref="textarea" readonly>
-[{
-    "name": "狗库",
-    "homepage": "http://dogku.xuxo.top",
-    "url": "http://localhost:5233/search",
-    "method": "post",
-    "type": "GM_xmlhttpRequest",
-    "contentType": "json",
-    "data": {
-        "title": "${title}",
-        "options": "${options}",
-        "type": "${type}"
-    },
-    "handler": "return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.data]"
-}] </textarea
-        >
+        <textarea ref="textarea" :value="JSON.stringify(ocsConfig, null, 2)" readonly></textarea>
       </div>
     </div>
   </div>

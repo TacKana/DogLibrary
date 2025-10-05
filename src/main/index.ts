@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { ServiceManager } from './services/ServiceManager'
+import { ServiceManager } from './app/ServiceManager'
 
 function createWindow(): void {
   // 创建浏览器窗口。

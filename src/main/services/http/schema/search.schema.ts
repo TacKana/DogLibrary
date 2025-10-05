@@ -1,7 +1,8 @@
 import z from 'zod'
 
 export const searchSchema = z.object({
-  title: z.string(),
-  type: z.enum(['single', 'multiple', 'judgement', 'completion']),
+  title: z.string(), // 题目
+  type: z.enum(['single', 'multiple', 'judgement', 'completion']), // 题目类型
+  // 题目选项
   options: z.string(),
 })

@@ -215,7 +215,9 @@ class Newapi implements AIAdapter {
       messages: messages, // ← 数组原样传递
       model: this.config.modelName,
     })
-    return completion.choices[0]?.message?.content ?? ''
+    console.log(completion)
+
+    return completion.choices[0].message.content!
   }
 }
 //#endregion

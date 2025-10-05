@@ -1,6 +1,7 @@
-import { UserConfigManager } from './config/userConfig'
-import { HttpManager } from './http/httpManager'
-import { AIManager } from './ai/aiManager'
+import { AppController } from './appController'
+import { AIManager } from '../services/ai/aiManager'
+import { UserConfigManager } from '../services/config/userConfig'
+import { HttpManager } from '../services/http/httpManager'
 
 /**
  * 全局服务管理器，负责统一创建与初始化所有核心服务。
@@ -19,16 +20,19 @@ export class ServiceManager {
   private userConfigManager: UserConfigManager
   private httpManager: HttpManager
   private aIManager: AIManager
+  private appController: AppController
 
   constructor() {
     this.userConfigManager = new UserConfigManager()
     this.aIManager = new AIManager(async () => (await this.userConfigManager.get()).aiConfig)
-    this.httpManager = new HttpManager(this.userConfigManager, this.aIManager)
+    this.appController = new AppController(this.aIManager)
+    this.httpManager = new HttpManager(this.userConfigManager, this.aIManager, this.appController)
   }
   async init(): Promise<void> {
     // 按依赖顺序初始化
     await this.userConfigManager.initialize()
     await this.httpManager.initialize()
     void this.aIManager
+    void this.appController
   }
 }
