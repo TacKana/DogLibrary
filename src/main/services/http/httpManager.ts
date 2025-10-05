@@ -79,7 +79,7 @@ export class HttpManager {
    * @remarks
    * 该方法会：
    * 1. 获取网络配置信息
-   * 2. 如果服务已运行，则直接返回
+   * 2. 如果服务已运行，则不进行任何操作
    * 3. 加载 AI 管理器
    * 4. 在指定端口启动 HTTP 服务器
    *
@@ -88,10 +88,11 @@ export class HttpManager {
    */
   private async start(): Promise<void> {
     this.config = (await this.userConfigManager.get()).network
-    if (this.server) {
-      console.log(`HTTP 服务已经在端口 ${this.config.port} 上运行`)
+    if (this.server && this.isRunning()) {
+      console.log(`HTTP 服务已在端口 ${this.config.port} 运行`)
       return
     }
+
     await this.aIManager.load()
     this.server = this.app.listen(this.config.port, async () => {
       console.log(`HTTP 服务已在http://localhost:${this.config.port} 上启动`)
@@ -107,8 +108,8 @@ export class HttpManager {
    * @throws 如果关闭服务器时发生错误
    */
   private async stop(): Promise<void> {
-    if (this.server && this.isRunning()) {
-      console.log(`HTTP 服务已在端口 ${this.config.port} 运行`)
+    if (!this.server) {
+      console.log('HTTP服务器当前未运行')
       return
     }
 
