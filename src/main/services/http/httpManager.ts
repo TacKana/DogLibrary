@@ -94,7 +94,7 @@ export class HttpManager {
     }
 
     await this.aIManager.load()
-    this.server = this.app.listen(this.config.port, async () => {
+    this.server = this.app.listen(this.config.port, () => {
       console.log(`HTTP 服务已在http://localhost:${this.config.port} 上启动`)
     })
   }
@@ -102,26 +102,24 @@ export class HttpManager {
   /**
    * 停止HTTP服务器
    *
-   * 如果服务器正在运行，则关闭服务器并卸载AI管理器。
-   * 如果服务器未运行或已停止，则不执行任何操作。
-   *
-   * @throws 如果关闭服务器时发生错误
+   * 如果服务器当前未运行，将输出提示信息并直接返回。
+   * 如果服务器正在运行，将执行以下操作：
+   * 1. 卸载AI管理器
+   * 2. 关闭服务器并输出停止信息
+   * 3. 关闭所有连接
+   * 4. 将服务器实例置为null
    */
-  private async stop(): Promise<void> {
+  private stop(): void {
     if (!this.server) {
       console.log('HTTP服务器当前未运行')
       return
     }
-
-    await new Promise<void>((resolve, reject) => {
-      this.server!.close((err) => {
-        if (err) return reject(err)
-        this.aIManager.unload()
-        this.server = null
-        console.log('HTTP服务器已停止')
-        resolve()
-      })
+    this.aIManager.unload()
+    this.server!.close(() => {
+      console.log('HTTP服务器已停止')
     })
+    this.server.closeAllConnections()
+    this.server = null
   }
 
   private isRunning(): boolean {
