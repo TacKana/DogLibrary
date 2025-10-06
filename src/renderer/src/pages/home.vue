@@ -1,70 +1,80 @@
 <script setup lang="ts">
-import autosize from 'autosize'
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
-import { ElButton, ElMessage } from 'element-plus'
+import { ref } from 'vue'
+import { ElButton, ElMessage, ElInput, MessageHandler } from 'element-plus'
 import { UserConfig } from '@common/types/userConfig.interface'
-// --- 多行文本框高度自适应 ---
-//#region
-const textarea = useTemplateRef('textarea')
-onMounted(() => {
-  autosize(textarea.value!)
-})
-//#endregion
-// --- 多行文本框高度自适应 END ---
 
-// --- 控制HTTP服务和大模型API服务 ---
+// --- 控制服务 ---
 //#region
+const ip = ref('')
 const isRunning = ref({
-  running: true,
+  running: false,
   text: '启动服务',
 })
+/**
+ * 控制服务开关
+ *
+ * 异步函数，用于控制服务开关
+ *
+ * @returns {Promise<void>} 返回一个 Promise 对象，在服务器切换完成后解析
+ */
 async function switchServer(): Promise<void> {
+  await loadNetworkConfig()
+  ip.value = await window.httpService.getLocalIP()
   if (await window.httpService.isRunning()) {
     await window.httpService.stop()
     ElMessage.success('已停止服务')
-    isRunning.value.running = true
+    isRunning.value.running = false
     isRunning.value.text = '启动服务'
+    ocsConfig.value = ''
     return
   }
   await window.httpService.start()
   ElMessage.success('已开启HTTP服务')
-  isRunning.value.running = false
+  isRunning.value.running = true
   isRunning.value.text = '停止服务'
+  ocsConfig.value = JSON.stringify(
+    [
+      {
+        name: '狗库',
+        homepage: 'http://dogku.xuxo.top',
+        url: `http://${config.value?.network?.isLAN ? ip.value : 'localhost'}:${config.value?.network?.port}/search`,
+        method: 'get',
+        type: 'GM_xmlhttpRequest',
+        contentType: 'json',
+        data: {
+          //这里是模板占位
+          title: '${title}',
+          options: '${options}',
+          type: '${type}',
+        },
+        // ocs网课助手模板脚本
+        handler: 'return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.anwser]',
+      },
+    ],
+    null,
+    2,
+  )
 }
 //#endregion
-// --- 控制HTTP服务 END ---
+// --- 控制服务 END ---
 
 // --- 获取配置 ---
-/**
- * 加载网络配置的异步函数。
- * 用于从相关数据源获取并更新当前网络配置信息。
- *
- * @returns {Promise<void>} 无返回值，异步执行网络配置加载操作。
- */
 const config = ref<UserConfig>()
-const ocsConfig = computed(() => [
-  {
-    name: '狗库',
-    homepage: 'http://dogku.xuxo.top',
-    url: `http://localhost:${config.value?.network.port}/search`,
-    method: 'post',
-    type: 'GM_xmlhttpRequest',
-    contentType: 'json',
-    data: {
-      title: '${title}',
-      options: '${options}',
-      type: '${type}',
-    },
-    handler: 'return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.anwser]',
-  },
-])
+const ocsConfig = ref('')
+
 async function loadNetworkConfig(): Promise<void> {
   config.value = await window.userConfig.get()
 }
-onMounted(() => {
-  loadNetworkConfig()
-})
+
 // --- 获取配置 END ---
+
+// --- 复制配置 ---
+async function copyConfig(): Promise<MessageHandler> {
+  if (ocsConfig.value === '') return ElMessage.warning('未启动服务，无法复制配置')
+  await navigator.clipboard.writeText(ocsConfig.value)
+  return ElMessage.success('已复制到剪贴板')
+}
+// --- 复制配置 END ---
 </script>
 
 <template>
@@ -73,21 +83,21 @@ onMounted(() => {
     <div class="serviceStatus">
       <div class="left">
         <p>服务状态</p>
-        <p v-show="!isRunning.running" style="color: green">已启动</p>
-        <p v-show="isRunning.running">未启动</p>
+        <p v-show="isRunning.running" style="color: green">已启动</p>
+        <p v-show="!isRunning.running">未启动</p>
       </div>
       <div class="right">
-        <el-button type="success" :plain="isRunning.running" @click="switchServer">{{ isRunning.text }}</el-button>
+        <el-button type="success" :plain="!isRunning.running" @click="switchServer">{{ isRunning.text }}</el-button>
       </div>
     </div>
     <div class="allocation">
       <div class="title">
         <p>题库配置（可导入OCS）</p>
-        <el-button type="primary" plain>复制配置</el-button>
+        <el-button type="primary" plain @click="copyConfig">复制配置</el-button>
       </div>
 
       <div class="textarea">
-        <textarea ref="textarea" :value="JSON.stringify(ocsConfig, null, 2)" readonly></textarea>
+        <el-input v-model="ocsConfig" style="width: 100%" autosize type="textarea" readonly placeholder="启动后获取配置" />
       </div>
     </div>
   </div>

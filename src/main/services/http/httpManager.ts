@@ -6,7 +6,7 @@ import { searchSchema } from './schema/search.schema'
 import { UserConfigManager } from '../config/userConfig'
 import { AIManager } from '../ai/aiManager'
 import { AppController } from '../../app/appController'
-
+import os from 'os'
 /**
  * HTTP 服务管理器
  *
@@ -76,15 +76,13 @@ export class HttpManager {
   /**
    * 启动 HTTP 服务
    *
-   * @remarks
-   * 该方法会：
-   * 1. 获取网络配置信息
-   * 2. 如果服务已运行，则不进行任何操作
-   * 3. 加载 AI 管理器
-   * 4. 在指定端口启动 HTTP 服务器
+   * @description
+   * 初始化并启动 HTTP 服务器。首先检查配置并确保 AI 管理器已加载，
+   * 如果服务已在运行则跳过启动过程。
    *
-   * @returns 无返回值 Promise
-   * @throws 如果启动过程中出现错误会抛出异常
+   * @returns {Promise<void>} 异步操作，无返回值
+   *
+   * @throws {Error} 当服务器启动失败时抛出错误
    */
   private async start(): Promise<void> {
     this.config = (await this.userConfigManager.get()).network
@@ -94,8 +92,9 @@ export class HttpManager {
     }
 
     await this.aIManager.load()
-    this.server = this.app.listen(this.config.port, () => {
-      console.log(`HTTP 服务已在http://localhost:${this.config.port} 上启动`)
+    const host = this.config.isLAN ? this.getLocalIP() : 'localhost'
+    this.server = this.app.listen(this.config.port, host, () => {
+      console.log(`HTTP 服务已在http://${host}:${this.config.port} 上启动`)
     })
   }
 
@@ -129,17 +128,19 @@ export class HttpManager {
   /**
    * 初始化HTTP服务管理器
    *
-   * 该方法会移除所有已存在的HTTP服务相关IPC处理器，并重新注册以下处理器：
-   * - 'start-HttpService': 启动HTTP服务
-   * - 'stop-HttpService': 停止HTTP服务
-   * - 'isRunning': 检查HTTP服务运行状态
+   * 此方法会清理并重新注册所有与HTTP服务相关的IPC处理器：
+   * - 启动HTTP服务 (start-HttpService)
+   * - 停止HTTP服务 (stop-HttpService)
+   * - 检查服务运行状态 (isRunning)
+   * - 获取本地IP地址 (getLocalIP)
    *
-   * @returns 无返回值Promise
+   * 确保IPC通信通道在服务启动前处于干净状态，避免重复注册处理器
    */
   async initialize(): Promise<void> {
     ipcMain.removeHandler('start-HttpService')
     ipcMain.removeHandler('stop-HttpService')
     ipcMain.removeHandler('isRunning')
+    ipcMain.removeHandler('getLocalIP')
 
     ipcMain.handle('start-HttpService', () => {
       return this.start()
@@ -150,5 +151,22 @@ export class HttpManager {
     ipcMain.handle('isRunning', async (): Promise<boolean> => {
       return this.isRunning()
     })
+    ipcMain.handle('getLocalIP', () => this.getLocalIP())
+  }
+  /**
+   * 获取本机的IPv4地址
+   *
+   * 该方法会遍历所有网络接口，返回第一个非内部IPv4地址
+   * 主要用于获取本机在网络中的实际IP地址
+   *
+   * @returns 返回找到的IPv4地址字符串，如果未找到则返回undefined
+   */
+  private getLocalIP(): string {
+    for (const net of Object.values(os.networkInterfaces()).flat()) {
+      if (net && net.family === 'IPv4' && !net.internal) {
+        return net.address
+      }
+    }
+    return 'localhost'
   }
 }

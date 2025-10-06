@@ -10,6 +10,7 @@ const httpService = {
   start: () => ipcRenderer.invoke('start-HttpService'),
   stop: () => ipcRenderer.invoke('stop-HttpService'),
   isRunning: (): Promise<boolean> => ipcRenderer.invoke('isRunning'),
+  getLocalIP: (): Promise<string> => ipcRenderer.invoke('getLocalIP'),
 }
 contextBridge.exposeInMainWorld('userConfig', userConfig)
 contextBridge.exposeInMainWorld('httpService', httpService)
