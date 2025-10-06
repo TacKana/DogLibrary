@@ -203,7 +203,7 @@ class Newapi implements AIAdapter {
   constructor(config: NewapiConfig) {
     this.config = config
     this.sdk = new OpenAI({
-      baseURL: this.config.baseUrl,
+      baseURL: this.config.baseUrl + '/v1',
       apiKey: this.config.apiKey,
     })
   }
