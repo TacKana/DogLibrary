@@ -122,7 +122,7 @@ async function saveAIconfig(): Promise<void> {
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].internetSearch" :disabled="true" />
                 </div>
               </li>
             </ul>
@@ -144,7 +144,7 @@ async function saveAIconfig(): Promise<void> {
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.alibaba].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.alibaba].internetSearch" :disabled="true" />
                 </div>
               </li>
             </ul>
@@ -166,7 +166,7 @@ async function saveAIconfig(): Promise<void> {
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.siliconflow].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.siliconflow].internetSearch" :disabled="true" />
                 </div>
               </li>
             </ul>
@@ -188,7 +188,7 @@ async function saveAIconfig(): Promise<void> {
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.volcengine].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.volcengine].internetSearch" :disabled="true" />
                 </div>
               </li>
             </ul>
@@ -219,7 +219,7 @@ async function saveAIconfig(): Promise<void> {
               <li>
                 <div>
                   联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.newapi].internetSearch" />
+                  <el-switch v-model="aiModelApiSetting[aiProvider.newapi].internetSearch" :disabled="true" />
                 </div>
               </li>
             </ul>
