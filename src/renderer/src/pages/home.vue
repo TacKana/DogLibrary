@@ -48,7 +48,7 @@ async function switchServer(): Promise<void> {
           type: '${type}',
         },
         // ocs网课助手模板脚本
-        handler: 'return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.anwser]',
+        handler: 'return (res)=>res.code === 0 ? [res.data.msg, undefined] : [res.data.msg,res.data.answer]',
       },
     ],
     null,

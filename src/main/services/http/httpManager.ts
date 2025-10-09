@@ -56,19 +56,19 @@ export class HttpManager {
     this.app.post('/search', async (req, res) => {
       try {
         const data = searchSchema.parse(req.body)
-        const anwser = await this.appController.search(data)
-        res.json({ success: true, data: anwser })
+        const answer = await this.appController.search(data)
+        res.json({ success: true, data: answer })
       } catch (error) {
-        res.status(400).json({ success: false, data: { code: 0, anwser: error, msg: '请求错误' } })
+        res.status(400).json({ success: false, data: { code: 0, answer: error, msg: '请求错误' } })
       }
     })
     this.app.get('/search', async (req, res) => {
       try {
         const data = searchSchema.parse(req.query)
-        const anwser = await this.appController.search(data)
-        res.json({ success: true, data: anwser })
+        const answer = await this.appController.search(data)
+        res.json({ success: true, data: answer })
       } catch (error) {
-        res.status(400).json({ success: false, data: { code: 0, anwser: error, msg: '请求错误' } })
+        res.status(400).json({ success: false, data: { code: 0, answer: error, msg: '请求错误' } })
       }
     })
   }

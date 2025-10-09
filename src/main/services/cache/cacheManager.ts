@@ -1,7 +1,8 @@
+import Database from 'better-sqlite3'
+import { eq } from 'drizzle-orm'
+import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
 import { app } from 'electron'
 import path from 'path'
-import Database from 'better-sqlite3'
-import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
 import { cache } from './schema/cache'
 
 export class CacheManager {
@@ -30,9 +31,11 @@ export class CacheManager {
       .run()
     this.sqlite.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS cache_question_unique ON cache (question)`).run()
   }
-  async increase(data: typeof cache.$inferInsert): Promise<unknown> {
-    const newData = await this.db.insert(cache).values(data).returning({ insertedId: cache.id })
-    console.log(newData)
-    return newData
+  save(data: typeof cache.$inferInsert): void {
+    this.db.insert(cache).values(data).onConflictDoNothing().execute()
+  }
+  async query(question: typeof cache.$inferInsert.question): Promise<typeof cache.$inferInsert> {
+    const results = await this.db.select().from(cache).where(eq(cache.question, question)).execute()
+    return results[0]
   }
 }

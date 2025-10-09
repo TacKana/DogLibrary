@@ -10,5 +10,13 @@
   },
   "cSpell.words": ["aimodel", "autosize", "deepseek", "elrow", "newapi", "siliconflow", "unplugin", "volcengine", "vueuse", "xmlhttp"],
   "oxc.enable": true,
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "缓存",
+      "database": "C:\\Users\\SunJinyuan\\AppData\\Roaming\\dog-library\\answer.db"
+    }
+  ]
 }
