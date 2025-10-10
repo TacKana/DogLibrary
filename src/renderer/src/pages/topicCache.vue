@@ -1,123 +1,26 @@
 <script setup lang="ts">
-import { Delete, Download, Edit, FolderAdd, Refresh } from '@element-plus/icons-vue'
+import { Delete, /* Download, Edit, FolderAdd, */ Refresh } from '@element-plus/icons-vue'
 import { ElButton, ElInput, ElTable, ElTableColumn /* ElText */ } from 'element-plus'
 // import BaseLayout from '@renderer/components/BaseLayout.vue'
 
 import { useWindowSize } from '@vueuse/core'
+import { onMounted, ref } from 'vue'
+import { CacheArray } from '@common/types/cache'
 const { height } = useWindowSize()
 
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
+const tableData = ref<CacheArray>([])
+onMounted(() => {
+  getCache()
+})
+async function getCache(): Promise<void> {
+  tableData.value = await window.cacheManager.query(0, 100)
+}
+function del(id: number): void {
+  console.log(id)
+
+  window.cacheManager.del(id)
+  getCache()
+}
 </script>
 
 <template>
@@ -138,23 +41,23 @@ const tableData = [
         <el-input style="width: 240px" placeholder="输入题目关键词" />
         <div class="button">
           <el-button type="danger" plain>清空</el-button>
-          <el-button type="primary" :icon="Edit" circle plain />
-          <el-button type="primary" :icon="FolderAdd" circle plain />
-          <el-button type="primary" :icon="Download" circle plain />
-          <el-button type="primary" :icon="Refresh" circle plain />
+          <!-- <el-button type="primary" :icon="Edit" circle plain /> -->
+          <!-- <el-button type="primary" :icon="FolderAdd" circle plain /> -->
+          <!-- <el-button type="primary" :icon="Download" circle plain /> -->
+          <el-button type="primary" :icon="Refresh" circle plain @click="getCache" />
         </div>
       </div>
       <div class="body">
         <el-table :data="tableData" stripe style="width: 100%" table-layout="fixed" :max-height="height - 100">
-          <el-table-column prop="date" label="问题" />
-          <el-table-column prop="name" label="答案" />
-          <el-table-column prop="address" label="操作" width="180">
-            <template #default="">
+          <el-table-column prop="question" label="问题" />
+          <el-table-column prop="answer" label="答案" />
+          <el-table-column prop="id" label="操作" width="180">
+            <template #default="scope">
               <!-- <div>
                     {{ scope.$index }}
                   </div> -->
-              <el-button type="primary" :icon="Edit" circle plain />
-              <el-button type="danger" :icon="Delete" circle plain />
+              <!-- <el-button type="primary" :icon="Edit" circle plain /> -->
+              <el-button type="danger" :icon="Delete" circle plain @click="del(scope.row.id)" />
             </template>
           </el-table-column>
         </el-table>

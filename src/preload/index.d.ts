@@ -1,3 +1,4 @@
+import { CacheArray } from '@common/types/cache'
 import { UserConfig } from 'src/common/types/userConfig.interface'
 
 declare global {
@@ -11,6 +12,10 @@ declare global {
       stop: () => Promise<void>
       isRunning: () => Promise<boolean>
       getLocalIP: () => Promise<string>
+    }
+    cacheManager: {
+      query: (offset: number, limit: number) => Promise<CacheArray>
+      del: (id: number) => void
     }
   }
 }
