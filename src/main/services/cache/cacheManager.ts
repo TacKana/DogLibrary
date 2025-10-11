@@ -1,10 +1,24 @@
 import Database from 'better-sqlite3'
-import { desc, eq } from 'drizzle-orm'
+import { desc, eq, ilike } from 'drizzle-orm'
 import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
 import { app, ipcMain } from 'electron'
 import path from 'path'
 import { cache } from './schema/cache'
+import { CacheArray, CacheRow } from '../../../common/types/cache'
 
+/**
+ * 缓存管理器类，负责管理应用程序的缓存数据
+ *
+ * 该类提供了缓存数据的存储、查询、删除等功能，使用SQLite数据库作为存储后端。
+ * 支持精确搜索、模糊搜索、分页查询等操作，并通过IPC与渲染进程进行通信。
+ *
+ * @example
+ * ```typescript
+ * const cacheManager = new CacheManager()
+ * cacheManager.initialize()
+ * await cacheManager.save({ question: '问题', answer: '答案', type: '类型' })
+ * ```
+ */
 export class CacheManager {
   private dbPath = path.join(app.getPath('userData'), 'answer.db')
   private db: BetterSQLite3Database
@@ -13,10 +27,13 @@ export class CacheManager {
     this.sqlite = new Database(this.dbPath)
     this.db = drizzle(this.sqlite)
   }
+
   /**
-   * 初始化缓存管理器
-   * 创建缓存表（如果不存在），包含id、question、answer、type字段
-   * 并在question字段上创建唯一索引
+   * 初始化缓存管理器。
+   * 创建缓存表（如果不存在），并为其创建一个唯一索引。
+   * 移除并重新注册 `del-Cache` 和 `query-Cache` 的 IPC 处理程序。
+   * `del-Cache` 处理程序用于删除指定 ID 的缓存项。
+   * `query-Cache` 处理程序用于查询缓存项，返回指定范围内的结果。
    */
   initialize(): void {
     this.sqlite
@@ -32,31 +49,70 @@ export class CacheManager {
 
     ipcMain.removeHandler('del-Cache')
     ipcMain.removeHandler('query-Cache')
+    ipcMain.removeHandler('search-Cache')
     ipcMain.handle('del-Cache', (_, id: number) => this.del(id))
-    ipcMain.handle('query-Cache', (_, offset: number, limit: number) => this.paginationQuery(offset, limit))
-  }
-  /**
-   * 将数据插入缓存表；若主键冲突则忽略。
-   * @param data - 符合缓存表插入约束的数据对象
-   */
-  save(data: typeof cache.$inferInsert): void {
-    this.db.insert(cache).values(data).onConflictDoNothing().execute()
-  }
-  /**
-   * 根据问题文本查询缓存记录。
-   *
-   * @param question - 要查询的问题内容。
-   * @returns 匹配到的第一条缓存记录；若不存在则返回 `undefined`。
-   */
-  query(question: typeof cache.$inferInsert.question): typeof cache.$inferSelect | undefined {
-    const results = this.db.select().from(cache).where(eq(cache.question, question)).execute()
-    return results[0]
-  }
-  private paginationQuery(offset: number = 0, limit: number = 10): (typeof cache.$inferSelect)[] {
-    return this.db.select().from(cache).orderBy(desc(cache.id)).offset(offset).limit(limit).all()
+    ipcMain.handle('query-Cache', (_, offset: number, limit: number) => this.query(offset, limit))
+    ipcMain.handle('search-Cache', (_, question: string) => this.fuzzySearch(question))
   }
 
-  private del(id: number): void {
-    this.db.delete(cache).where(eq(cache.id, id)).execute()
+  /**
+   * 将数据保存到缓存中。
+   * @param data - 要保存的缓存行数据。
+   * @returns 如果保存成功则返回 `true`，否则返回 `false`。
+   */
+  async save(data: Omit<CacheRow, 'id'>): Promise<boolean> {
+    const newData = await this.db.insert(cache).values(data).onConflictDoNothing().returning().execute()
+    if (!newData) {
+      return false
+    }
+    return true
+  }
+
+  /**
+   * 删除指定ID的缓存数据。
+   *
+   * @param id 要删除的缓存数据的ID
+   * @returns 如果删除成功则返回true，否则返回false
+   */
+  async del(id: number): Promise<boolean> {
+    const delData = await this.db.delete(cache).where(eq(cache.id, id)).returning().execute()
+    if (!delData) {
+      return false
+    }
+    return true
+  }
+
+  /**
+   * 使用指定问题进行精确搜索缓存行。
+   * @param question - 要搜索的问题。
+   * @returns 匹配的缓存行，如果未找到则为 undefined。
+   */
+  async exactSearch(question: string): Promise<CacheRow | undefined> {
+    const results = await this.db.select().from(cache).where(eq(cache.question, question)).execute()
+    return results[0]
+  }
+
+  /**
+   * 模糊搜索缓存中包含指定问题的条目。
+   * @param question - 要搜索的问题
+   * @returns 包含指定问题的缓存数组，如果未找到则为 undefined
+   */
+  async fuzzySearch(question: string): Promise<CacheArray | undefined> {
+    const results = await this.db
+      .select()
+      .from(cache)
+      .where(ilike(cache.question, `%${question}%`))
+      .execute()
+    return results
+  }
+  /**
+   * 从缓存中查询数据。
+   * @param offset - 查询结果的偏移量。
+   * @param limit - 查询结果的限制数量。
+   * @returns 返回一个包含缓存数据的Promise。
+   */
+  async query(offset: number = 0, limit: number = 10): Promise<CacheArray> {
+    const data = await this.db.select().from(cache).orderBy(desc(cache.id)).offset(offset).limit(limit).execute()
+    return data
   }
 }

@@ -15,7 +15,8 @@ declare global {
     }
     cacheManager: {
       query: (offset: number, limit: number) => Promise<CacheArray>
-      del: (id: number) => void
+      del: (id: number) => Promise<boolean>
+      search: (question: string) => Promise<CacheArray>
     }
   }
 }

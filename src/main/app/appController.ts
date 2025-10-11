@@ -48,7 +48,7 @@ export class AppController {
    * @throws 无显式抛出，但 AI 解析失败时会返回默认错误信息
    */
   async search(data: z.infer<typeof searchSchema>): Promise<{ code: number; answer: string; msg: string }> {
-    const cache = await this.cacheManager.query(data.title)
+    const cache = await this.cacheManager.exactSearch(data.title)
     if (data.title === cache?.question) {
       // 调用ai之前先查询数据库中是否有缓存，有则直接返回跳过ai生成
       return {
@@ -78,7 +78,11 @@ export class AppController {
       console.error('AI解析JSON失败', e)
     }
     // 答题成功后缓存答案
-    this.cacheManager.save({ type: questionType[data.type], question: data.title, answer: answer.answer })
+    this.cacheManager.save({
+      type: questionType[data.type],
+      question: data.title,
+      answer: answer.answer,
+    })
     return answer
   }
 }
