@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Delete, /* Download, Edit, FolderAdd, */ Refresh } from '@element-plus/icons-vue'
-import { ElButton, ElInput, ElTable, ElTableColumn /* ElText */ } from 'element-plus'
+import { ElButton, ElInput, ElTable, ElTableColumn /* ElText */, ElPagination } from 'element-plus'
 // import BaseLayout from '@renderer/components/BaseLayout.vue'
 
 import { useWindowSize } from '@vueuse/core'
@@ -38,7 +38,10 @@ function del(id: number): void {
     <!-- <template #body> -->
     <div class="table">
       <div class="operation">
-        <el-input style="width: 240px" placeholder="输入题目关键词" />
+        <div class="">
+          <el-input style="width: 240px; padding-right: 5px" placeholder="输入题目关键词" />
+          <el-button type="primary" plain>搜索</el-button>
+        </div>
         <div class="button">
           <el-button type="danger" plain>清空</el-button>
           <!-- <el-button type="primary" :icon="Edit" circle plain /> -->
@@ -48,7 +51,7 @@ function del(id: number): void {
         </div>
       </div>
       <div class="body">
-        <el-table :data="tableData" stripe style="width: 100%" table-layout="fixed" :max-height="height - 100">
+        <el-table :data="tableData" stripe style="width: 100%" table-layout="fixed" :max-height="height - 120">
           <el-table-column prop="question" label="问题" />
           <el-table-column prop="answer" label="答案" />
           <el-table-column prop="id" label="操作" width="180">
@@ -63,6 +66,8 @@ function del(id: number): void {
         </el-table>
       </div>
     </div>
+    <el-pagination :page-sizes="[100, 200, 300, 400]" layout="prev, pager, next,sizes" :total="1000" />
+
     <!-- </template> -->
     <!-- </BaseLayout> -->
   </div>
