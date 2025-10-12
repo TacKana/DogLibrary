@@ -50,9 +50,11 @@ export class CacheManager {
     ipcMain.removeHandler('del-Cache')
     ipcMain.removeHandler('query-Cache')
     ipcMain.removeHandler('search-Cache')
+    ipcMain.removeHandler('clearAll-Cache')
     ipcMain.handle('del-Cache', (_, id: number) => this.del(id))
     ipcMain.handle('query-Cache', (_, offset: number, limit: number) => this.query(offset, limit))
     ipcMain.handle('search-Cache', (_, question: string) => this.fuzzySearch(question))
+    ipcMain.handle('clearAll-Cache', () => this.clearAll())
   }
 
   /**
@@ -69,17 +71,22 @@ export class CacheManager {
   }
 
   /**
-   * 删除指定ID的缓存数据。
-   *
-   * @param id 要删除的缓存数据的ID
-   * @returns 如果删除成功则返回true，否则返回false
+   * 根据ID删除缓存数据
+   * @param id - 要删除的缓存数据的ID
+   * @returns 返回一个Promise，解析为布尔值表示是否删除成功
    */
   async del(id: number): Promise<boolean> {
     const delData = await this.db.delete(cache).where(eq(cache.id, id)).returning().execute()
-    if (!delData) {
-      return false
-    }
-    return true
+    return Boolean(delData)
+  }
+
+  /**
+   * 清除缓存中的所有数据
+   * @returns {Promise<boolean>} 返回一个Promise，解析为布尔值表示是否成功清除所有缓存数据
+   */
+  async clearAll(): Promise<boolean> {
+    const delData = await this.db.delete(cache).returning().execute()
+    return Boolean(delData)
   }
 
   /**
@@ -111,8 +118,9 @@ export class CacheManager {
    * @param limit - 查询结果的限制数量。
    * @returns 返回一个包含缓存数据的Promise。
    */
-  async query(offset: number = 0, limit: number = 10): Promise<CacheArray> {
+  async query(offset: number = 0, limit: number = 10): Promise<{ count: number; data: CacheArray }> {
     const data = await this.db.select().from(cache).orderBy(desc(cache.id)).offset(offset).limit(limit).execute()
-    return data
+    const count = await this.db.$count(cache)
+    return { count, data }
   }
 }

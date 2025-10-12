@@ -1,25 +1,38 @@
 <script setup lang="ts">
 import { Delete, /* Download, Edit, FolderAdd, */ Refresh } from '@element-plus/icons-vue'
-import { ElButton, ElInput, ElTable, ElTableColumn /* ElText */, ElPagination } from 'element-plus'
+import { ElButton, ElInput, ElPagination, ElTable, ElTableColumn /* ElText */ } from 'element-plus'
 // import BaseLayout from '@renderer/components/BaseLayout.vue'
-
+import { CacheArray } from '@common/types/cache'
 import { useWindowSize } from '@vueuse/core'
 import { onMounted, ref } from 'vue'
-import { CacheArray } from '@common/types/cache'
+
+//表格动态高度
 const { height } = useWindowSize()
 
-const tableData = ref<CacheArray>([])
+//表格数据
+const tableData = ref<{ count: number; data: CacheArray }>({ count: 0, data: [] })
+
+// 分页控制
+const currentPage = ref(1)
+const pageSize = ref(50)
+
 onMounted(() => {
-  getCache()
+  getCache(0, 100)
 })
-async function getCache(): Promise<void> {
-  tableData.value = await window.cacheManager.query(0, 100)
+
+async function getCache(page = currentPage.value, limit = pageSize.value): Promise<void> {
+  const offset = (page - 1) * limit
+  tableData.value = await window.cacheManager.query(offset, limit)
 }
 function del(id: number): void {
   console.log(id)
-
   window.cacheManager.del(id)
-  getCache()
+  getCache(0, 100)
+}
+
+function clearAll(): void {
+  window.cacheManager.clearAll()
+  getCache(0, 100)
 }
 </script>
 
@@ -43,15 +56,15 @@ function del(id: number): void {
           <el-button type="primary" plain>搜索</el-button>
         </div>
         <div class="button">
-          <el-button type="danger" plain>清空</el-button>
+          <el-button @click="clearAll" type="danger" plain>清空</el-button>
           <!-- <el-button type="primary" :icon="Edit" circle plain /> -->
           <!-- <el-button type="primary" :icon="FolderAdd" circle plain /> -->
           <!-- <el-button type="primary" :icon="Download" circle plain /> -->
-          <el-button type="primary" :icon="Refresh" circle plain @click="getCache" />
+          <el-button type="primary" :icon="Refresh" circle plain @click="getCache(0, 100)" />
         </div>
       </div>
       <div class="body">
-        <el-table :data="tableData" stripe style="width: 100%" table-layout="fixed" :max-height="height - 120">
+        <el-table :data="tableData.data" stripe style="width: 100%" table-layout="fixed" :max-height="height - 120">
           <el-table-column prop="question" label="问题" />
           <el-table-column prop="answer" label="答案" />
           <el-table-column prop="id" label="操作" width="180">
@@ -65,8 +78,18 @@ function del(id: number): void {
           </el-table-column>
         </el-table>
       </div>
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[50, 100, 200, 300, 400]"
+        background
+        layout="prev, pager, next,sizes"
+        :total="tableData.count"
+        @current-change="getCache"
+        @size-change="getCache(1, pageSize)"
+        style="padding-top: 20px"
+      />
     </div>
-    <el-pagination :page-sizes="[100, 200, 300, 400]" layout="prev, pager, next,sizes" :total="1000" />
 
     <!-- </template> -->
     <!-- </BaseLayout> -->

@@ -14,9 +14,10 @@ declare global {
       getLocalIP: () => Promise<string>
     }
     cacheManager: {
-      query: (offset: number, limit: number) => Promise<CacheArray>
+      query: (offset: number, limit: number) => Promise<{ count: number; data: CacheArray }>
       del: (id: number) => Promise<boolean>
       search: (question: string) => Promise<CacheArray>
+      clearAll: () => Promise<void>
     }
   }
 }

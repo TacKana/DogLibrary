@@ -24,6 +24,7 @@ export default defineConfig(
   {
     files: ['**/*.{ts,mts,tsx,vue}'],
     rules: {
+      'linebreak-style': 'off',
       'prettier/prettier': [
         'error',
         {
