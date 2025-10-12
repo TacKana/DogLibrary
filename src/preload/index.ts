@@ -15,7 +15,7 @@ const httpService = {
 const cacheManager = {
   query: (offset: number, limit: number) => ipcRenderer.invoke('query-Cache', offset, limit),
   del: (id: number) => ipcRenderer.invoke('del-Cache', id),
-  search: (question: string) => ipcRenderer.invoke('search-search', question),
+  search: (question: string) => ipcRenderer.invoke('search-Cache', question),
   clearAll: () => ipcRenderer.invoke('clearAll-Cache'),
 }
 contextBridge.exposeInMainWorld('userConfig', userConfig)

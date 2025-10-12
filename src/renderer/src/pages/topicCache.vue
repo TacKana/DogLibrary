@@ -34,6 +34,13 @@ function clearAll(): void {
   window.cacheManager.clearAll()
   getCache(0, 100)
 }
+const question = ref('')
+async function search(): Promise<void> {
+  console.log(question.value)
+
+  const results = await window.cacheManager.search(question.value)
+  tableData.value.data = results
+}
 </script>
 
 <template>
@@ -52,11 +59,11 @@ function clearAll(): void {
     <div class="table">
       <div class="operation">
         <div class="">
-          <el-input style="width: 240px; padding-right: 5px" placeholder="输入题目关键词" />
-          <el-button type="primary" plain>搜索</el-button>
+          <el-input v-model="question" style="width: 240px; padding-right: 5px" placeholder="输入题目关键词" />
+          <el-button type="primary" plain @click="search">搜索</el-button>
         </div>
         <div class="button">
-          <el-button @click="clearAll" type="danger" plain>清空</el-button>
+          <el-button type="danger" plain @click="clearAll">清空</el-button>
           <!-- <el-button type="primary" :icon="Edit" circle plain /> -->
           <!-- <el-button type="primary" :icon="FolderAdd" circle plain /> -->
           <!-- <el-button type="primary" :icon="Download" circle plain /> -->
@@ -81,13 +88,14 @@ function clearAll(): void {
       <el-pagination
         v-model:current-page="currentPage"
         v-model:page-size="pageSize"
+        :hide-on-single-page="tableData.count < 50"
         :page-sizes="[50, 100, 200, 300, 400]"
         background
         layout="prev, pager, next,sizes"
         :total="tableData.count"
+        style="padding-top: 20px"
         @current-change="getCache"
         @size-change="getCache(1, pageSize)"
-        style="padding-top: 20px"
       />
     </div>
 

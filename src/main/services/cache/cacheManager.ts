@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3'
-import { desc, eq, ilike } from 'drizzle-orm'
+import { desc, eq, like } from 'drizzle-orm'
 import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
 import { app, ipcMain } from 'electron'
 import path from 'path'
@@ -108,7 +108,8 @@ export class CacheManager {
     const results = await this.db
       .select()
       .from(cache)
-      .where(ilike(cache.question, `%${question}%`))
+      .where(like(cache.question, `%${question}%`))
+
       .execute()
     return results
   }
