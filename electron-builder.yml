@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: dog-library
+appId: dog.xuxo.top
+productName: 狗库
 directories:
   buildResources: build
 files:
@@ -9,6 +9,8 @@ files:
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asar: true
+compression: maximum
 asarUnpack:
   - resources/**
 win:
@@ -18,6 +20,8 @@ nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  installerIcon: './build/icons/icon.ico'
+  uninstallerIcon: './build/icons/icon.ico'
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
