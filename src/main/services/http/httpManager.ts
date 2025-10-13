@@ -90,7 +90,6 @@ export class HttpManager {
       console.log(`HTTP 服务已在端口 ${this.config.port} 运行`)
       return
     }
-
     await this.aIManager.load()
     const host = this.config.isLAN ? this.getLocalIP() : 'localhost'
     this.server = this.app.listen(this.config.port, host, () => {

@@ -69,7 +69,7 @@ export class AIManager {
         throw new Error(`不支持的提供商: ${this.config.apiProvider}`)
     }
     console.log(`当前已经加载`)
-    console.log(this.activeProvider)
+    // console.log(this.activeProvider)
   }
   /**
    * 向当前激活的 AI 服务提供者发送对话请求。
@@ -86,7 +86,6 @@ export class AIManager {
     if (this.activeProvider) {
       this.activeProvider.unload()
       this.activeProvider = undefined
-      console.log(`当前已经卸载${this.activeProvider}`)
     }
   }
 }

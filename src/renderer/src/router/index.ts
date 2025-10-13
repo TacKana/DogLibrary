@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 import AppSettings from '@renderer/pages/appSettings.vue'
 import AiModel from '@renderer/pages/appSettings/aiModel.vue'
@@ -9,7 +9,8 @@ import Home from '@renderer/pages/home.vue'
 import TopicCache from '@renderer/pages/topicCache.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  // history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
     { path: '/', redirect: '/home' },
     {

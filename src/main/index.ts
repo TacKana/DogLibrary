@@ -1,5 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain, nativeTheme } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { ServiceManager } from './app/ServiceManager'
@@ -12,7 +12,7 @@ function createWindow(): void {
     height: 670,
     minHeight: 670,
     show: false,
-
+    icon: path.join(__dirname, '../../resources/icon.png'),
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
