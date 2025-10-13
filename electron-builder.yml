@@ -16,6 +16,8 @@ asarUnpack:
 win:
   executableName: dog-library
 nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
