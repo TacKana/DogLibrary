@@ -19,5 +19,8 @@ declare global {
       search: (question: string) => Promise<CacheArray>
       clearAll: () => Promise<void>
     }
+    darkMode: {
+      toggle: () => Promise<boolean>
+    }
   }
 }

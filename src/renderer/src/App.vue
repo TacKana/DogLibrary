@@ -5,7 +5,10 @@ import { useDark } from '@vueuse/core'
 import SvgIcon from './components/SvgIcon.vue'
 
 // 深色模式切换按钮
-const colorMode = useDark()
+const colorMode = async (): Promise<void> => {
+  await window.darkMode.toggle()
+  useDark()
+}
 </script>
 
 <template>
@@ -14,7 +17,7 @@ const colorMode = useDark()
       <el-col :span="2">
         <div class="sidebar">
           <div class="top">
-            <el-switch v-model="colorMode" size="large" :active-action-icon="MoonNight" :inactive-action-icon="Sunset" />
+            <el-switch size="large" :active-action-icon="MoonNight" :inactive-action-icon="Sunset" @change="colorMode" />
           </div>
           <ul>
             <li>

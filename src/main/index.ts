@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -8,8 +8,11 @@ function createWindow(): void {
   // 创建浏览器窗口。
   const mainWindow = new BrowserWindow({
     width: 900,
+    minWidth: 900,
     height: 670,
+    minHeight: 670,
     show: false,
+
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -46,6 +49,15 @@ app.whenReady().then(async () => {
   // 在开发环境中，默认通过 F12 键打开或关闭开发者工具
   // 并且在生产环境中忽略 CommandOrControl + R 组合键。
   // 参见https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+
+  ipcMain.handle('dark-mode:toggle', () => {
+    if (nativeTheme.shouldUseDarkColors) {
+      nativeTheme.themeSource = 'light'
+    } else {
+      nativeTheme.themeSource = 'dark'
+    }
+    return nativeTheme.shouldUseDarkColors
+  })
 
   const serviceManager = new ServiceManager()
   serviceManager.init()

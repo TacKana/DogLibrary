@@ -18,6 +18,10 @@ const cacheManager = {
   search: (question: string) => ipcRenderer.invoke('search-Cache', question),
   clearAll: () => ipcRenderer.invoke('clearAll-Cache'),
 }
+const darkMode = {
+  toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
+}
 contextBridge.exposeInMainWorld('userConfig', userConfig)
 contextBridge.exposeInMainWorld('httpService', httpService)
 contextBridge.exposeInMainWorld('cacheManager', cacheManager)
+contextBridge.exposeInMainWorld('darkMode', darkMode)
