@@ -6,10 +6,10 @@ import SvgIcon from './components/SvgIcon.vue'
 import { ref } from 'vue'
 
 // 深色模式切换按钮
-const colorMode = ref(false)
+const colorMode = ref()
 const colorModeToggle = async (): Promise<void> => {
   await window.darkMode.toggle()
-  colorMode.value === false ? (colorMode.value = false) : (colorMode.value = true)
+  colorMode.value === true ? (colorMode.value = true) : (colorMode.value = false)
   useDark()
 }
 </script>
