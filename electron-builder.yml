@@ -9,12 +9,18 @@ files:
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  # 移除对 better-sqlite3 和 .node 文件的排除，确保原生模块被包含
+  # - '!node_modules/better-sqlite3'  <-- 删除这行
+  # - '!out/main/chunks/*.node'      <-- 删除这行
 asar: true
 compression: maximum
 asarUnpack:
   - resources/**
+  # 确保原生模块的二进制文件被解压（关键配置）
+  - node_modules/better-sqlite3/build/Release/better_sqlite3.node
+  - node_modules/better-sqlite3/**/*.node
 win:
-  executableName: dog-library
+  executableName: 狗库
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
@@ -43,7 +49,8 @@ linux:
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
-npmRebuild: false
+# 建议开启 npmRebuild 以自动处理原生模块重建
+npmRebuild: true
 publish:
   provider: generic
   url: https://example.com/auto-updates
