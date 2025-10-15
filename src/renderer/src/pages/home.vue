@@ -79,7 +79,11 @@ async function copyConfig(): Promise<MessageHandler> {
 
 <template>
   <div class="home">
-    <h1>首页</h1>
+    <div class="title">
+      <h1>首页</h1>
+      <p>v1.00</p>
+    </div>
+
     <div class="serviceStatus">
       <div class="left">
         <p>服务状态</p>
@@ -109,6 +113,10 @@ async function copyConfig(): Promise<MessageHandler> {
   // height: 100%;
   display: flex;
   flex-direction: column;
+  .title {
+    display: flex;
+    align-items: baseline;
+  }
 
   @mixin serviceStatus {
     padding: 15px;
