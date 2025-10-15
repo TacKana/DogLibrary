@@ -3,6 +3,7 @@ import { AIManager } from '../services/ai/aiManager'
 import { UserConfigManager } from '../services/config/userConfig'
 import { HttpManager } from '../services/http/httpManager'
 import { CacheManager } from '../services/cache/cacheManager'
+import { UpdaterManager } from '../services/updater/updaterManager'
 
 /**
  * 全局服务管理器，负责统一创建与初始化所有核心服务。
@@ -23,6 +24,7 @@ export class ServiceManager {
   private aIManager: AIManager
   private appController: AppController
   private cacheManager: CacheManager
+  private updaterManager: UpdaterManager
 
   constructor() {
     this.userConfigManager = new UserConfigManager()
@@ -30,6 +32,7 @@ export class ServiceManager {
     this.aIManager = new AIManager(async () => (await this.userConfigManager.get()).aiConfig)
     this.appController = new AppController(this.aIManager, this.cacheManager)
     this.httpManager = new HttpManager(this.userConfigManager, this.aIManager, this.appController)
+    this.updaterManager = new UpdaterManager()
   }
   async init(): Promise<void> {
     // 按依赖顺序初始化
@@ -38,5 +41,6 @@ export class ServiceManager {
     await this.httpManager.initialize()
     void this.aIManager
     void this.appController
+    this.updaterManager.initialize()
   }
 }

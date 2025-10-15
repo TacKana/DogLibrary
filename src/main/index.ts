@@ -60,9 +60,6 @@ app.whenReady().then(async () => {
     return nativeTheme.shouldUseDarkColors
   })
 
-  const serviceManager = new ServiceManager()
-  serviceManager.init()
-
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
@@ -72,6 +69,8 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
   createWindow()
+  const serviceManager = new ServiceManager()
+  serviceManager.init()
 })
 
 // 当所有窗口都关闭时退出，但 macOS 系统除外。在该系统上，应用程序及其菜单栏通常会保持活跃状态，直到用户通过 Cmd + Q 明确退出。

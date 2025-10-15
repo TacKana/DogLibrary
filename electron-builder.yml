@@ -22,7 +22,7 @@ asarUnpack:
 win:
   executableName: 狗库
 nsis:
-  allowElevation: true,
+  allowElevation: true
   oneClick: false
   allowToChangeInstallationDirectory: true
   artifactName: ${name}-${version}-setup.${ext}
@@ -32,7 +32,6 @@ nsis:
   installerHeaderIcon: './build/icons/icon.ico'
   installerIcon: './build/icons/icon.ico'
   uninstallerIcon: './build/icons/icon.ico'
-  shortcutName: ${productName}
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
@@ -50,12 +49,14 @@ linux:
     - deb
   maintainer: electronjs.org
   category: Utility
+ 
 appImage:
   artifactName: ${name}-${version}.${ext}
 # 建议开启 npmRebuild 以自动处理原生模块重建
 npmRebuild: true
 publish:
   provider: generic
-  url: https://dog.xuxo.top/updates
+  url: http://127.0.0.1:5500/updates
+
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
