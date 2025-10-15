@@ -4,7 +4,7 @@ import { Server } from 'http'
 import { NetworkConfig } from '../../../common/types/userConfig.interface'
 import { searchSchema } from './schema/search.schema'
 import { UserConfigManager } from '../config/userConfig'
-import { AIManager } from '../ai/aiManager'
+import { AIManager } from '../ai/AI'
 import { AppController } from '../../app/appController'
 import os from 'os'
 /**

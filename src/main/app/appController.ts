@@ -1,5 +1,5 @@
 import z from 'zod'
-import { AIManager } from '../services/ai/aiManager'
+import { AIManager } from '../services/ai/AI'
 import { searchSchema } from '../services/http/schema/search.schema'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { CacheManager } from '../services/cache/cacheManager'

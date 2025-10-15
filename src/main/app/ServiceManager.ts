@@ -1,5 +1,5 @@
 import { AppController } from './appController'
-import { AIManager } from '../services/ai/aiManager'
+import { AIManager } from '../services/ai/AI'
 import { UserConfigManager } from '../services/config/userConfig'
 import { HttpManager } from '../services/http/httpManager'
 import { CacheManager } from '../services/cache/cacheManager'
@@ -29,7 +29,7 @@ export class ServiceManager {
   constructor() {
     this.userConfigManager = new UserConfigManager()
     this.cacheManager = new CacheManager()
-    this.aIManager = new AIManager(async () => (await this.userConfigManager.get()).aiConfig)
+    this.aIManager = new AIManager(this.userConfigManager)
     this.appController = new AppController(this.aIManager, this.cacheManager)
     this.httpManager = new HttpManager(this.userConfigManager, this.aIManager, this.appController)
     this.updaterManager = new UpdaterManager()
@@ -39,7 +39,7 @@ export class ServiceManager {
     await this.userConfigManager.initialize()
     this.cacheManager.initialize()
     await this.httpManager.initialize()
-    void this.aIManager
+    await this.aIManager.initialize()
     void this.appController
     this.updaterManager.initialize()
   }
