@@ -22,14 +22,17 @@ asarUnpack:
 win:
   executableName: 狗库
 nsis:
+  allowElevation: true,
   oneClick: false
   allowToChangeInstallationDirectory: true
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  installerHeaderIcon: './build/icons/icon.ico'
   installerIcon: './build/icons/icon.ico'
   uninstallerIcon: './build/icons/icon.ico'
+  shortcutName: ${productName}
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
@@ -53,6 +56,6 @@ appImage:
 npmRebuild: true
 publish:
   provider: generic
-  url: https://example.com/auto-updates
+  url: https://dog.xuxo.top/updates
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

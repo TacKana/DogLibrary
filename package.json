@@ -26,6 +26,7 @@
     "@vueuse/core": "^13.9.0",
     "better-sqlite3": "^12.4.1",
     "drizzle-orm": "^0.44.6",
+    "electron-updater": "^6.6.2",
     "element-plus": "^2.11.3",
     "express": "^5.1.0",
     "openai": "^6.1.0",
