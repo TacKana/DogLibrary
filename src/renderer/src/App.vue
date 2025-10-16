@@ -66,7 +66,7 @@ const colorModeToggle = async (): Promise<void> => {
         <div class="routerView">
           <router-view v-slot="{ Component }">
             <FadeOutTransition>
-              <keep-alive>
+              <keep-alive include="home">
                 <component :is="Component" />
               </keep-alive>
             </FadeOutTransition>
