@@ -82,6 +82,9 @@ export class UserConfigManager {
     }
   }
   async initialize(): Promise<void> {
+    ipcMain.removeHandler('get-userConfig')
+    ipcMain.removeHandler('set-userConfig')
+
     // 获取配置的ipc双向通信
     ipcMain.handle('get-userConfig', () => {
       return this.get()

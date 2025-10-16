@@ -10,23 +10,23 @@ import { computed } from 'vue'
 const props = defineProps({
   className: {
     type: String,
-    default: ''
+    default: '',
   },
   // 图标名称，对应 Iconfont 项目中的符号名
   iconClass: {
     type: String,
-    required: true
+    required: true,
   },
   // 图标颜色
   color: {
     type: String,
-    default: 'inherit'
+    default: 'inherit',
   },
   // 图标尺寸，可以传入如 '20px' 或 '1em'
   size: {
     type: String,
-    default: '1em'
-  }
+    default: '1em',
+  },
 })
 
 const classList = computed(() => ['svg-icon', props.className])

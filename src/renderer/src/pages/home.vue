@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ElButton, ElMessage, ElInput, MessageHandler } from 'element-plus'
 import { UserConfig } from '@common/types/userConfig.interface'
 
@@ -75,13 +75,18 @@ async function copyConfig(): Promise<MessageHandler> {
   return ElMessage.success('已复制到剪贴板')
 }
 // --- 复制配置 END ---
+
+// --- 版本号 ---
+const versions = ref()
+onMounted(() => (versions.value = window.electron.process.env.npm_package_version!))
+// --- 版本号 END ---
 </script>
 
 <template>
   <div class="home">
     <div class="title">
       <h1>首页</h1>
-      <p>v1.00</p>
+      <p>v{{ versions }}</p>
     </div>
 
     <div class="serviceStatus">

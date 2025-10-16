@@ -46,6 +46,7 @@ export default defineConfig(
           },
         },
       ],
+      ignorePatterns: ['src/renderer/src/assets/**/*'],
     },
   },
   eslintConfigPrettier,

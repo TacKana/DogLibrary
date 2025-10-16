@@ -95,8 +95,7 @@ async function search(): Promise<void> {
         :total="tableData.count"
         style="padding-top: 20px"
         @current-change="getCache"
-        @size-change="getCache(1, pageSize)"
-      />
+        @size-change="getCache(1, pageSize)" />
     </div>
 
     <!-- </template> -->

@@ -51,7 +51,7 @@ export class AIManager {
    * @key aiProvider - AI服务提供商枚举
    * @value function - 适配器构造函数，接收配置参数并返回对应的AI适配器实例
    */
-  private providerMap: { [key in aiProvider]: (config: any) => AIAdapter } = {
+  private providerMap: { [key in aiProvider]: (config) => AIAdapter } = {
     [aiProvider.deepseek]: (cfg) => new DeepSeek(cfg),
     [aiProvider.alibaba]: (cfg) => new BaiLian(cfg),
     [aiProvider.siliconflow]: (cfg) => new Siliconflow(cfg),

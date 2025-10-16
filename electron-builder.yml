@@ -50,7 +50,7 @@ linux:
     - deb
   maintainer: electronjs.org
   category: Utility
- 
+
 appImage:
   artifactName: ${name}-${version}.${ext}
 # 建议开启 npmRebuild 以自动处理原生模块重建

@@ -17,7 +17,7 @@ index.mount('#app')
 
 // 配置微软clarity统计
 // 开发环境不启用统计
-if (process.defaultApp) {
+if (!window.electron.process.env.NODE_ENV_ELECTRON_VITE) {
   const projectId = 'tpstapzh7x'
   Clarity.init(projectId)
 }

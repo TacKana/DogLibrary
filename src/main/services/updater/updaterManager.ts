@@ -1,6 +1,5 @@
-import { dialog, shell, WebContentsView } from 'electron'
+import { app, dialog, ipcMain, shell } from 'electron'
 import electronUpdater, { type AppUpdater } from 'electron-updater'
-import { webContents } from 'electron/main'
 
 export class UpdaterManager {
   updater: AppUpdater
@@ -8,12 +7,14 @@ export class UpdaterManager {
     const { autoUpdater } = electronUpdater
     this.updater = autoUpdater
   }
-  initialize() {
+  initialize(): void {
     this.updater.autoDownload = false
     this.updater.allowPrerelease = false // 是否更新到预发布版
     this.updater.allowDowngrade = false // 是否允许降级
     this.updater.autoInstallOnAppQuit = false
-    if (process.env.NODE_ENV === 'development') {
+
+    // 用于开发环境调试
+    if (!app.isPackaged) {
       this.updater.forceDevUpdateConfig = true
     }
 
@@ -23,58 +24,69 @@ export class UpdaterManager {
     this.updater.on('error', (err: Error) => this.updateError(err))
     this.updater.on('update-downloaded', () => this.updateDownloaded())
 
+    ipcMain.removeHandler('checkForUpdates')
+    ipcMain.handle('checkForUpdates', () => this.checkForUpdates())
+
     this.checkForUpdates()
   }
 
-  checkForUpdates() {
-    this.updater.checkForUpdates()
+  /**
+   * 检查是否有可用更新
+   *
+   * 该方法会触发更新检查流程，与远程服务器通信
+   * 以确定是否存在新版本的应用程序
+   */
+  checkForUpdates(): Promise<electronUpdater.UpdateCheckResult | null> {
+    return this.updater.checkForUpdates()
   }
 
   // 有更新时的回调
-  updateAvailable() {
-    // dialog
-    //   .showMessageBox({
-    //     title: '狗库发布新版本啦',
-    //     message: '新版本带来了更好的体验，需要更新吗？',
-    //     type: 'info',
-    //     buttons: ['更新', '官网下载', '本次忽略'],
-    //   })
-    //   .then((res) => {
-    //     switch (res.response) {
-    //       case 0:
-    //         this.incrementalUpdate() // 增量更新
-    //         break
-    //       case 1:
-    //         shell.openExternal('https://dog.xuxo.top')
-    //         break
-    //       default:
-    //         break
-    //     }
-    //   })
-    // 这里可以调用你想要执行的更新提示方法
+  updateAvailable(): void {
+    dialog
+      .showMessageBox({
+        title: '狗库发布新版本啦',
+        message: '新版本带来了更好的体验，需要更新吗？',
+        type: 'info',
+        icon: '../../../../resources/icon.png',
+        buttons: ['更新', '官网下载', '本次忽略'],
+        cancelId: 2,
+      })
+      .then((res) => {
+        console.log(res)
+        switch (res.response) {
+          case 0:
+            this.updater.downloadUpdate() // 更新
+            break
+          case 1:
+            shell.openExternal('https://dog.xuxo.top')
+            break
+          default:
+            break
+        }
+      })
   }
 
   // 没有更新时的回调
-  updateNotAvailable() {
+  updateNotAvailable(): void {
     dialog.showMessageBox({
       title: '你已经是最新版本啦！',
       message: '无需更新',
       type: 'none',
       buttons: ['关闭'],
     })
-
-    // 这里可以调用你想要执行的没有更新的提示方法
   }
 
   // 更新过程中发生错误的回调
-  updateError(err: Error) {
+  updateError(err: Error): void {
+    const errStr = JSON.stringify(err.stack)
     dialog
       .showMessageBox({
         title: '更新出错！！！',
-        message: '请截屏完整本窗口的内容找开发者反馈，或者官网重新下载新版本安装',
-        detail: JSON.stringify(err),
+        message: '请截屏本窗口完整内容找开发者反馈',
+        detail: errStr,
         type: 'error',
         buttons: ['前往官网', '忽略'],
+        cancelId: 1,
       })
       .then((res) => {
         switch (res.response) {
@@ -85,22 +97,33 @@ export class UpdaterManager {
             break
         }
       })
-    // 这里可以调用你想要执行的更新提示方法
   }
 
   // 下载完成后执行的回调
-  updateDownloaded() {
-    this.restartApp() // 这里调用重启应用的逻辑
+  updateDownloaded(): void {
+    dialog
+      .showMessageBox({
+        message: '已准备就绪，是否重启应用更新？',
+        title: '已准备就绪，是否重启应用更新？',
+        type: 'info',
+        buttons: ['重启', '稍后更新'],
+        cancelId: 1,
+      })
+      .then((res) => {
+        switch (res.response) {
+          case 0:
+            this.restartApp()
+            break
+          default:
+            break
+        }
+      })
   }
 
   // 重启应用
-  restartApp() {
+  restartApp(): void {
     setTimeout(() => {
       this.updater.quitAndInstall()
-    }, 1000) // 给一些时间处理下载完毕后的清理
-  }
-
-  incrementalUpdate() {
-    this.updater.downloadUpdate()
+    }, 2000) // 给一些时间处理下载完毕后的清理
   }
 }
