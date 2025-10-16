@@ -23,10 +23,6 @@ export class UpdaterManager {
     this.updater.on('update-not-available', () => this.updateNotAvailable())
     this.updater.on('error', (err: Error) => this.updateError(err))
     this.updater.on('update-downloaded', () => this.updateDownloaded())
-
-    ipcMain.removeHandler('checkForUpdates')
-    ipcMain.handle('checkForUpdates', () => this.checkForUpdates())
-
     this.checkForUpdates()
   }
 
@@ -36,8 +32,8 @@ export class UpdaterManager {
    * 该方法会触发更新检查流程，与远程服务器通信
    * 以确定是否存在新版本的应用程序
    */
-  checkForUpdates(): Promise<electronUpdater.UpdateCheckResult | null> {
-    return this.updater.checkForUpdates()
+  async checkForUpdates(): Promise<void> {
+    this.updater.checkForUpdates()
   }
 
   // 有更新时的回调
@@ -103,11 +99,11 @@ export class UpdaterManager {
   updateDownloaded(): void {
     dialog
       .showMessageBox({
-        message: '已准备就绪，是否重启应用更新？',
-        title: '已准备就绪，是否重启应用更新？',
+        message: '已准备就绪重启以应用更新',
+        title: '已准备就绪重启以应用更新',
         type: 'info',
-        buttons: ['重启', '稍后更新'],
-        cancelId: 1,
+        buttons: ['重启'],
+        cancelId: 0,
       })
       .then((res) => {
         switch (res.response) {
