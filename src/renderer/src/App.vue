@@ -58,11 +58,12 @@ const colorModeToggle = async (): Promise<void> => {
       </el-col>
       <el-col :span="22">
         <div class="routerView">
-          <router-view v-slot="{ Component, route }">
-            <keep-alive>
-              <component :is="Component" v-if="route.meta.keepAlive" />
-            </keep-alive>
-            <component :is="Component" v-if="!route.meta.keepAlive" />
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <keep-alive>
+                <component :is="Component" />
+              </keep-alive>
+            </transition>
           </router-view>
         </div>
       </el-col>
@@ -71,6 +72,15 @@ const colorModeToggle = async (): Promise<void> => {
 </template>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 .app {
   // background-color: red;
   // position: relative;

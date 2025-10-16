@@ -16,7 +16,6 @@ const router = createRouter({
       path: '/home',
       component: Home,
       name: 'Home',
-      meta: { keepAlive: true }, // 控制是否缓存
     },
     {
       path: '/cache',
