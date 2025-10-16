@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { aiProvider } from '../../../../common/types/aiProvider.enum'
-import { AlibabaConfig } from '../../../../common/types/userConfig.interface'
+import { AlibabaConfig } from '../../../../common/types/Config.interface'
 import { AIAdapter } from '../../../../common/types/AIAdapter'
 
 export class BaiLian implements AIAdapter {

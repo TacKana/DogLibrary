@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron'
 import express, { Express } from 'express'
 import { Server } from 'http'
-import { NetworkConfig } from '../../../common/types/userConfig.interface'
+import { NetworkConfig } from '../../../common/types/Config.interface'
 import { searchSchema } from './schema/search.schema'
-import { UserConfigManager } from '../config/userConfig'
+import { ConfigManager } from '../config/config'
 import { AIManager } from '../ai/AI'
 import { AppController } from '../../controller/answers'
 import os from 'os'
@@ -33,7 +33,7 @@ export class HttpManager {
   private config!: NetworkConfig
 
   constructor(
-    private userConfigManager: UserConfigManager,
+    private ConfigManager: ConfigManager,
     private aIManager: AIManager,
     private appController: AppController,
   ) {
@@ -85,7 +85,7 @@ export class HttpManager {
    * @throws {Error} 当服务器启动失败时抛出错误
    */
   private async start(): Promise<void> {
-    this.config = (await this.userConfigManager.get()).network
+    this.config = (await this.ConfigManager.get()).network
     if (this.server && this.isRunning()) {
       console.log(`HTTP 服务已在端口 ${this.config.port} 运行`)
       return

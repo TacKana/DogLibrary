@@ -13,7 +13,7 @@
  * 适用场景：
  * 用户通过界面修改网络相关设置，并可一键保存当前配置。
  */
-import { NetworkConfig } from '@common/types/userConfig.interface'
+import { NetworkConfig } from '@common/types/Config.interface'
 import { ElCard, ElRow, ElCol, ElSwitch, ElText, ElInput, ElAlert, ElButton, ElMessage } from 'element-plus'
 import { ref, toRaw } from 'vue'
 import { onMounted } from 'vue'
@@ -27,7 +27,7 @@ const networkOption = ref<NetworkConfig>({} as NetworkConfig)
  * @returns {Promise<void>} 无返回值，异步执行网络配置加载操作。
  */
 async function loadNetworkConfig(): Promise<void> {
-  const { network } = await window.userConfig.get()
+  const { network } = await window.Config.get()
   networkOption.value = network
   console.log(networkOption.value)
 }
@@ -46,7 +46,7 @@ onMounted(() => {
 async function saveNetworkConfig(): Promise<void> {
   const newConfig = { network: { ...toRaw(networkOption.value) } }
   console.log(newConfig)
-  const res = await window.userConfig.set(newConfig)
+  const res = await window.Config.set(newConfig)
   console.log(res)
   if (res === true) {
     ElMessage.success('保存成功')

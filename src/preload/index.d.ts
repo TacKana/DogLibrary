@@ -1,13 +1,13 @@
 import { CacheArray } from '@common/types/cache'
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { UserConfig } from 'src/common/types/userConfig.interface'
+import { Config } from 'src/common/types/Config.interface'
 
 declare global {
   interface Window {
     electron: ElectronAPI
-    userConfig: {
-      get: () => Promise<UserConfig>
-      set: (newUserConfig: Partial<UserConfig>) => Promise<boolean>
+    Config: {
+      get: () => Promise<Config>
+      set: (newConfig: Partial<Config>) => Promise<boolean>
     }
     httpService: {
       start: () => Promise<void>

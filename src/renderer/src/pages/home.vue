@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { ElButton, ElMessage, ElInput, MessageHandler } from 'element-plus'
-import { UserConfig } from '@common/types/userConfig.interface'
+import { Config } from '@common/types/config'
 
 // --- 控制服务 ---
 //#region
@@ -59,11 +59,11 @@ async function switchServer(): Promise<void> {
 // --- 控制服务 END ---
 
 // --- 获取配置 ---
-const config = ref<UserConfig>()
+const config = ref<Config>()
 const ocsConfig = ref('')
 
 async function loadNetworkConfig(): Promise<void> {
-  config.value = await window.userConfig.get()
+  config.value = await window.Config.get()
 }
 
 // --- 获取配置 END ---

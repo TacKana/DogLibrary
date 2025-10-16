@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { aiProvider } from '../../../../common/types/aiProvider.enum'
-import { DeepseekConfig } from '../../../../common/types/userConfig.interface'
+import { DeepseekConfig } from '../../../../common/types/Config.interface'
 import { AIAdapter } from '../../../../common/types/AIAdapter'
 
 export class DeepSeek implements AIAdapter {

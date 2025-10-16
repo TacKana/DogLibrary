@@ -49,7 +49,7 @@ export interface NetworkConfig {
   isLAN: boolean
 }
 
-export interface UserConfig {
+export interface Config {
   aiConfig: AiConfig
   network: NetworkConfig
 }

@@ -1,6 +1,6 @@
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { aiProvider } from '../../../../common/types/aiProvider.enum'
-import { NewapiConfig } from '../../../../common/types/userConfig.interface'
+import { NewapiConfig } from '../../../../common/types/Config.interface'
 import OpenAI from 'openai'
 import { AIAdapter } from '../../../../common/types/AIAdapter'
 

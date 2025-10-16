@@ -1,11 +1,10 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { UserConfig } from '../common/types/userConfig.interface'
+import { Config } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
-// 用户配置相关
-const userConfig = {
-  get: () => ipcRenderer.invoke('get-userConfig'),
-  set: (newUserConfig: Partial<UserConfig>) => ipcRenderer.invoke('set-userConfig', newUserConfig),
+const config = {
+  get: () => ipcRenderer.invoke('get-Config'),
+  set: (newConfig: Partial<Config>) => ipcRenderer.invoke('set-Config', newConfig),
 }
 const httpService = {
   start: () => ipcRenderer.invoke('start-HttpService'),
@@ -22,7 +21,7 @@ const cacheManager = {
 const darkMode = {
   toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
 }
-contextBridge.exposeInMainWorld('userConfig', userConfig)
+contextBridge.exposeInMainWorld('Config', config)
 contextBridge.exposeInMainWorld('httpService', httpService)
 contextBridge.exposeInMainWorld('cacheManager', cacheManager)
 contextBridge.exposeInMainWorld('darkMode', darkMode)

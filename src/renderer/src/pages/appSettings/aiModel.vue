@@ -23,7 +23,7 @@
 import { ElCard, ElRow, ElCol, ElSelect, ElOption, ElInput, ElSwitch, ElButton, ElMessage } from 'element-plus'
 import { onMounted, ref, toRaw } from 'vue'
 import { aiProvider } from '@common/types/aiProvider.enum'
-import { AiProviderConfig } from '@common/types/userConfig.interface'
+import { AiProviderConfig } from '@common/types/Config.interface'
 
 // --- 主要变量 ---
 // 当前所选的 AI API 提供商。
@@ -41,7 +41,7 @@ const aiModelApiSetting = ref({} as AiProviderConfig)
  */
 async function loadconfig(): Promise<void> {
   // 通过ipc双向通信拿到配置
-  const { aiConfig } = await window.userConfig.get()
+  const { aiConfig } = await window.Config.get()
   // 加载当前所选的 AI API 提供商
   apiProvider.value = aiConfig.apiProvider
   // 加载API提供商选项
@@ -65,7 +65,7 @@ async function saveAIconfig(): Promise<void> {
       aiProviderConfig: { ...toRaw(aiModelApiSetting.value) },
     },
   }
-  const res = await window.userConfig.set(newConfig)
+  const res = await window.Config.set(newConfig)
   console.log(res)
   if (res === true) {
     ElMessage.success('保存成功')

@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, shell } from 'electron'
+import { app, dialog, shell } from 'electron'
 import electronUpdater, { type AppUpdater } from 'electron-updater'
 
 export class UpdaterManager {

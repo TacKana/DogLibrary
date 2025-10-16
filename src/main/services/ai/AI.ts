@@ -1,13 +1,13 @@
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { aiProvider } from '../../../common/types/aiProvider.enum'
-import { AiConfig } from '../../../common/types/userConfig.interface'
+import { AiConfig } from '../../../common/types/config'
 import { BaiLian } from './adapter/BaiLian'
 import { DeepSeek } from './adapter/DeepSeek'
 import { Siliconflow } from './adapter/Siliconflow'
 import { Volcengine } from './adapter/Volcengine'
 import { AIAdapter } from '../../../common/types/AIAdapter'
 import { Newapi } from './adapter/Newapi'
-import { UserConfigManager } from '../config/userConfig'
+import { ConfigManager } from '../config/config'
 
 /**
  * AIManager 负责按需异步加载并管理 AI 服务提供器。
@@ -36,10 +36,10 @@ export class AIManager {
   private getConfig!: () => Promise<AiConfig>
   private activeProvider?: AIAdapter
 
-  constructor(private userConfigManager: UserConfigManager) {}
+  constructor(private ConfigManager: ConfigManager) {}
 
   async initialize(): Promise<void> {
-    this.getConfig = async () => (await this.userConfigManager.get()).aiConfig
+    this.getConfig = async () => (await this.ConfigManager.get()).aiConfig
   }
 
   /**
