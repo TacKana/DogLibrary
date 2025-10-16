@@ -1,4 +1,4 @@
-<script>
+<script lang="ts" setup>
 // JavaScript 钩子逻辑...
 </script>
 
@@ -10,7 +10,7 @@
   </Transition>
 </template>
 
-<style>
+<style lang="scss">
 /*
   必要的 CSS...
   注意：避免在这里使用 <style scoped>
