@@ -1,6 +1,6 @@
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { aiProvider } from './aiProvider.enum'
-import { DeepseekConfig, AlibabaConfig, SiliconflowConfig, VolcengineConfig, NewapiConfig } from './Config.interface'
+import { DeepseekConfig, AlibabaConfig, SiliconflowConfig, VolcengineConfig, NewapiConfig } from './config'
 
 /**
  * 统一封装各类 AI 服务（Deepseek、Alibaba、Siliconflow、Volcengine、Newapi）的适配器接口。

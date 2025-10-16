@@ -23,7 +23,7 @@
 import { ElCard, ElRow, ElCol, ElSelect, ElOption, ElInput, ElSwitch, ElButton, ElMessage } from 'element-plus'
 import { onMounted, ref, toRaw } from 'vue'
 import { aiProvider } from '@common/types/aiProvider.enum'
-import { AiProviderConfig } from '@common/types/Config.interface'
+import { AiProviderConfig } from '@common/types/config'
 
 // --- 主要变量 ---
 // 当前所选的 AI API 提供商。

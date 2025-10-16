@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { aiProvider } from '../../../../common/types/aiProvider.enum'
-import { VolcengineConfig } from '../../../../common/types/Config.interface'
+import { VolcengineConfig } from '../../../../common/types/config'
 import { AIAdapter } from '../../../../common/types/AIAdapter'
 
 export class Volcengine implements AIAdapter {

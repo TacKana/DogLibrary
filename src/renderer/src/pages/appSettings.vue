@@ -14,7 +14,9 @@ import BaseLayout from '@renderer/components/BaseLayout.vue'
             <li>
               <RouterLink to="/settings/network" active-class="active"><div class="button">网络</div></RouterLink>
             </li>
-            <!-- <li><RouterLink to="/settings/other">其他</RouterLink></li> -->
+            <li>
+              <RouterLink to="/settings/other" active-class="active"><div class="button">其他</div></RouterLink>
+            </li>
           </ul>
         </div>
       </template>

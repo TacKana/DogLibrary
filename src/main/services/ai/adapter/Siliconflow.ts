@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 import { ChatCompletionMessageParam } from 'openai/resources'
 import { aiProvider } from '../../../../common/types/aiProvider.enum'
-import { SiliconflowConfig } from '../../../../common/types/Config.interface'
+import { SiliconflowConfig } from '../../../../common/types/config'
 import { AIAdapter } from '../../../../common/types/AIAdapter'
 
 export class Siliconflow implements AIAdapter {

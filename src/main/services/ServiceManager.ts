@@ -22,7 +22,7 @@ export class ServiceManager {
   private ConfigManager: ConfigManager
   private httpManager: HttpManager
   private aIManager: AIManager
-  private appController: AnswersController
+  private AnswersController: AnswersController
   private cacheManager: CacheManager
   private updaterManager: UpdaterManager
 
@@ -30,8 +30,8 @@ export class ServiceManager {
     this.ConfigManager = new ConfigManager()
     this.cacheManager = new CacheManager()
     this.aIManager = new AIManager(this.ConfigManager)
-    this.appController = new AnswersController(this.aIManager, this.cacheManager)
-    this.httpManager = new HttpManager(this.ConfigManager, this.aIManager, this.appController)
+    this.AnswersController = new AnswersController(this.aIManager, this.cacheManager)
+    this.httpManager = new HttpManager(this.ConfigManager, this.aIManager, this.AnswersController)
     this.updaterManager = new UpdaterManager()
   }
   async init(): Promise<void> {
@@ -40,7 +40,7 @@ export class ServiceManager {
     this.cacheManager.initialize()
     await this.httpManager.initialize()
     await this.aIManager.initialize()
-    void this.appController
+    void this.AnswersController
     this.updaterManager.initialize()
   }
 }

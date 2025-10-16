@@ -5,6 +5,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 const config = {
   get: () => ipcRenderer.invoke('get-Config'),
   set: (newConfig: Partial<Config>) => ipcRenderer.invoke('set-Config', newConfig),
+  reset: () => ipcRenderer.invoke('reset-Config'),
 }
 const httpService = {
   start: () => ipcRenderer.invoke('start-HttpService'),

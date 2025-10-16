@@ -1,11 +1,11 @@
 import { ipcMain } from 'electron'
 import express, { Express } from 'express'
 import { Server } from 'http'
-import { NetworkConfig } from '../../../common/types/Config.interface'
+import { NetworkConfig } from '../../../common/types/config'
 import { searchSchema } from './schema/search.schema'
 import { ConfigManager } from '../config/config'
 import { AIManager } from '../ai/AI'
-import { AppController } from '../../controller/answers'
+import { AnswersController } from '../../controller/answers'
 import os from 'os'
 /**
  * HTTP 服务管理器
@@ -35,7 +35,7 @@ export class HttpManager {
   constructor(
     private ConfigManager: ConfigManager,
     private aIManager: AIManager,
-    private appController: AppController,
+    private AnswersController: AnswersController,
   ) {
     this.app = express()
     this.app.use(express.json())
@@ -56,7 +56,7 @@ export class HttpManager {
     this.app.post('/search', async (req, res) => {
       try {
         const data = searchSchema.parse(req.body)
-        const answer = await this.appController.search(data)
+        const answer = await this.AnswersController.search(data)
         res.json({ success: true, data: answer })
       } catch (error) {
         res.status(400).json({ success: false, data: { code: 0, answer: error, msg: '请求错误' } })
@@ -65,7 +65,7 @@ export class HttpManager {
     this.app.get('/search', async (req, res) => {
       try {
         const data = searchSchema.parse(req.query)
-        const answer = await this.appController.search(data)
+        const answer = await this.AnswersController.search(data)
         res.json({ success: true, data: answer })
       } catch (error) {
         res.status(400).json({ success: false, data: { code: 0, answer: error, msg: '请求错误' } })

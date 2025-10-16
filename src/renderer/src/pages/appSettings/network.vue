@@ -13,7 +13,7 @@
  * 适用场景：
  * 用户通过界面修改网络相关设置，并可一键保存当前配置。
  */
-import { NetworkConfig } from '@common/types/Config.interface'
+import { NetworkConfig } from '@common/types/config'
 import { ElCard, ElRow, ElCol, ElSwitch, ElText, ElInput, ElAlert, ElButton, ElMessage } from 'element-plus'
 import { ref, toRaw } from 'vue'
 import { onMounted } from 'vue'
@@ -29,7 +29,6 @@ const networkOption = ref<NetworkConfig>({} as NetworkConfig)
 async function loadNetworkConfig(): Promise<void> {
   const { network } = await window.Config.get()
   networkOption.value = network
-  console.log(networkOption.value)
 }
 onMounted(() => {
   loadNetworkConfig()

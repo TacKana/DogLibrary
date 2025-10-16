@@ -6,24 +6,28 @@ import fs from 'fs'
 import { Config } from '../../../common/types/config'
 
 /**
- * 配置管理器
+ * 配置管理器类
  *
- * @remarks
- * 负责 Electron 应用的用户配置文件全生命周期管理：
- * - 在 `userData` 目录下维护 `config.json`
- * - 提供默认配置模板，支持 AI 服务商（deepseek、alibaba、siliconflow、volcengine、newapi）与网络端口设置
- * - 通过 `ipcMain.handle` 暴露 `get-Config` / `set-Config` 双向通信通道
- * - 所有读写均做深拷贝，避免外部引用污染
- * - 文件异常时自动回退至默认配置并重写文件
+ * 负责管理应用程序的配置信息，包括：
+ * - AI服务提供商配置（DeepSeek、阿里云、硅基流动、火山引擎、自定义API）
+ * - 网络配置（服务端口、局域网访问设置）
+ *
+ * 提供完整的配置生命周期管理功能：
+ * - 初始化默认配置
+ * - 读取和保存配置文件
+ * - 通过IPC通信与渲染进程交互
+ * - 支持配置的获取、更新和重置操作
+ *
+ * 配置文件存储在用户数据目录下的config.json文件中，采用JSON格式
+ * 支持深拷贝操作以避免引用问题，确保配置数据的独立性
  *
  * @example
- * ```ts
- * const manager = new ConfigManager();
- * const config  = await manager.get();      // 读取当前配置
- * await manager.set({ network: { port: 8080 } }); // 局部更新
+ * ```typescript
+ * const configManager = new ConfigManager();
+ * await configManager.initialize();
+ * const config = await configManager.get();
+ * await configManager.set({ network: { port: 8080 } });
  * ```
- *
- * @public
  */
 export class ConfigManager {
   private readonly configPath: string
@@ -84,6 +88,7 @@ export class ConfigManager {
   async initialize(): Promise<void> {
     ipcMain.removeHandler('get-Config')
     ipcMain.removeHandler('set-Config')
+    ipcMain.removeHandler('reset-Config')
 
     // 获取配置的ipc双向通信
     ipcMain.handle('get-Config', () => {
@@ -93,6 +98,8 @@ export class ConfigManager {
     ipcMain.handle('set-Config', (_, newConfig: Partial<Config>) => {
       return this.set(newConfig)
     })
+    ipcMain.handle('reset-Config', () => this.reset())
+
     console.log('已创建配置IPC双向通信')
     if (fs.existsSync(this.configPath)) {
       console.log('配置存在，跳过初始化')
@@ -105,7 +112,7 @@ export class ConfigManager {
   /**
    * 将用户配置对象持久化到配置文件。
    *
-   * @param config - 待保存的完整用户配置对象。
+   * @param config - 待保存的完整配置对象。
    * @returns 无返回值的 Promise，当写入完成或失败时决议。
    * @throws 当文件写入过程中发生错误时，Promise 会被拒绝并携带相应异常。
    *

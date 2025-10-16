@@ -3,10 +3,9 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import AppSettings from '@renderer/pages/appSettings.vue'
 import AiModel from '@renderer/pages/appSettings/aiModel.vue'
 import Network from '@renderer/pages/appSettings/network.vue'
-// import Other from '@renderer/pages/appSettings/other.vue'
-
 import Home from '@renderer/pages/home.vue'
 import TopicCache from '@renderer/pages/topicCache.vue'
+import Other from '@renderer/pages/appSettings/other.vue'
 
 const router = createRouter({
   // history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,10 +35,10 @@ const router = createRouter({
           path: 'network',
           component: Network,
         },
-        // {
-        //   path: 'other',
-        //   component: Other
-        // }
+        {
+          path: 'other',
+          component: Other,
+        },
       ],
     },
   ],

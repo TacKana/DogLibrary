@@ -1,6 +1,6 @@
 import { CacheArray } from '@common/types/cache'
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { Config } from 'src/common/types/Config.interface'
+import { Config } from 'src/common/types/config'
 
 declare global {
   interface Window {
@@ -8,6 +8,7 @@ declare global {
     Config: {
       get: () => Promise<Config>
       set: (newConfig: Partial<Config>) => Promise<boolean>
+      reset: () => Promise<Config>
     }
     httpService: {
       start: () => Promise<void>
