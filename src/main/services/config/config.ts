@@ -156,7 +156,7 @@ export class ConfigManager {
    *
    * 将配置恢复为默认设置，并保存到配置文件
    */
-  async reset() {
+  async reset(): Promise<void> {
     await this.saveConfigFile(this.defaultConfig)
   }
 }

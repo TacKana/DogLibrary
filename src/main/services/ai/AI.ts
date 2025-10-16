@@ -35,8 +35,17 @@ export class AIManager {
   private config!: AiConfig
   private getConfig!: () => Promise<AiConfig>
   private activeProvider?: AIAdapter
+  providerMap: Record<string, (cfg) => AIAdapter>
 
-  constructor(private ConfigManager: ConfigManager) {}
+  constructor(private ConfigManager: ConfigManager) {
+    this.providerMap = {
+      [aiProvider.deepseek]: (cfg) => new DeepSeek(cfg),
+      [aiProvider.alibaba]: (cfg) => new BaiLian(cfg),
+      [aiProvider.siliconflow]: (cfg) => new Siliconflow(cfg),
+      [aiProvider.volcengine]: (cfg) => new Volcengine(cfg),
+      [aiProvider.newapi]: (cfg) => new Newapi(cfg),
+    }
+  }
 
   async initialize(): Promise<void> {
     this.getConfig = async () => (await this.ConfigManager.get()).aiConfig
@@ -51,13 +60,6 @@ export class AIManager {
    * @key aiProvider - AI服务提供商枚举
    * @value function - 适配器构造函数，接收配置参数并返回对应的AI适配器实例
    */
-  private providerMap: { [key in aiProvider]: (config) => AIAdapter } = {
-    [aiProvider.deepseek]: (cfg) => new DeepSeek(cfg),
-    [aiProvider.alibaba]: (cfg) => new BaiLian(cfg),
-    [aiProvider.siliconflow]: (cfg) => new Siliconflow(cfg),
-    [aiProvider.volcengine]: (cfg) => new Volcengine(cfg),
-    [aiProvider.newapi]: (cfg) => new Newapi(cfg),
-  }
   /**
    * 加载AI服务提供商
    *

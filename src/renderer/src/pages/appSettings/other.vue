@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ElButton, ElText, ElCard, ElRow, ElCol, ElAlert, ElMessageBox, ElMessage } from 'element-plus'
 
-function reset() {
+function reset(): void {
   ElMessageBox.confirm('你即将还原所有设置，是否继续？', '警告', {
     confirmButtonText: '清空',
     cancelButtonText: '取消',
