@@ -9,8 +9,13 @@ import FadeOutTransition from './components/FadeOutTransition.vue'
 // 深色模式切换按钮
 const colorMode = ref()
 onMounted(async () => {
-  colorMode.value = await window.darkMode.toggle()
+  colorMode.value = await window.darkMode.get()
+  console.log(colorMode.value)
+  if (colorMode.value) {
+    useDark()
+  }
 })
+
 const colorModeToggle = async (): Promise<void> => {
   await window.darkMode.toggle()
   colorMode.value === true ? (colorMode.value = true) : (colorMode.value = false)

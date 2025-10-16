@@ -24,6 +24,7 @@ declare global {
     }
     darkMode: {
       toggle: () => Promise<boolean>
+      get: () => Promise<boolean>
     }
   }
 }

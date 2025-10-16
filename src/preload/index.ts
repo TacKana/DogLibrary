@@ -21,6 +21,7 @@ const cacheManager = {
 }
 const darkMode = {
   toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
+  get: () => ipcRenderer.invoke('dark-mode:get'),
 }
 contextBridge.exposeInMainWorld('Config', config)
 contextBridge.exposeInMainWorld('httpService', httpService)

@@ -63,6 +63,7 @@ app.whenReady().then(async () => {
     }
     return nativeTheme.shouldUseDarkColors
   })
+  ipcMain.handle('dark-mode:get', () => nativeTheme.shouldUseDarkColors)
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
