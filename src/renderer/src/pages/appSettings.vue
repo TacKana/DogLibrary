@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BaseLayout from '@renderer/components/BaseLayout.vue'
+import FadeOutTransition from '@renderer/components/FadeOutTransition.vue'
 </script>
 
 <template>
@@ -22,7 +23,13 @@ import BaseLayout from '@renderer/components/BaseLayout.vue'
       </template>
       <template #body>
         <div class="body">
-          <div class="routerView"><RouterView /></div>
+          <div class="routerView">
+            <router-view v-slot="{ Component }">
+              <FadeOutTransition>
+                <component :is="Component" />
+              </FadeOutTransition>
+            </router-view>
+          </div>
         </div>
       </template>
     </BaseLayout>

@@ -24,6 +24,7 @@ import { ElCard, ElRow, ElCol, ElSelect, ElOption, ElInput, ElSwitch, ElButton, 
 import { onMounted, ref, toRaw } from 'vue'
 import { aiProvider } from '@common/types/aiProvider.enum'
 import { AiProviderConfig } from '@common/types/config'
+import FadeOutTransition from '@renderer/components/FadeOutTransition.vue'
 
 // --- 主要变量 ---
 // 当前所选的 AI API 提供商。
@@ -104,126 +105,128 @@ async function saveAIconfig(): Promise<void> {
         </template>
         <el-row :gutter="0">
           <!-- Deepseek官方的api设置 -->
-          <div v-if="apiProvider === aiProvider.deepseek" class="body">
-            <ul>
-              <li><p>DeepSeek官方Api密钥</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.deepseek].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
-              </li>
-              <li>
-                <a href="https://platform.deepseek.com/usage" target="_blank"><p>获取Api密钥</p></a>
-              </li>
-              <li>
-                <div>
-                  深度思考
-                  <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].isDeep" />
-                </div>
-              </li>
-              <li>
-                <div>
-                  联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].internetSearch" :disabled="true" />
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!-- 阿里云百炼的api设置 -->
-          <div v-else-if="apiProvider === aiProvider.alibaba" class="body">
-            <ul>
-              <li><p>阿里云百炼Api密钥</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.alibaba].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
-              </li>
-              <li>
-                <a href="https://bailian.console.aliyun.com/#/home" target="_blank"><p>获取Api密钥</p></a>
-              </li>
-              <li><p>阿里云百炼模型名称</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.alibaba].modelName" placeholder="请输入模型名称" />
-              </li>
-              <li>
-                <div>
-                  联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.alibaba].internetSearch" :disabled="true" />
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!--- 硅基流动的api设置 -->
-          <div v-else-if="apiProvider === aiProvider.siliconflow" class="body">
-            <ul>
-              <li><p>硅基流动Api密钥</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.siliconflow].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
-              </li>
-              <li>
-                <a href="https://cloud.siliconflow.cn/me/account/ak" target="_blank"><p>获取Api密钥</p></a>
-              </li>
-              <li><p>硅基流动模型名称</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.siliconflow].modelName" placeholder="请输入模型名称" />
-              </li>
-              <li>
-                <div>
-                  联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.siliconflow].internetSearch" :disabled="true" />
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!-- 火山引擎的api设置 -->
-          <div v-else-if="apiProvider === aiProvider.volcengine" class="body">
-            <ul>
-              <li><p>火山引擎的Api密钥</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.volcengine].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
-              </li>
-              <li>
-                <a href="https://console.volcengine.com/ark" target="_blank"><p>获取Api密钥</p></a>
-              </li>
-              <li><p>火山引擎的模型名称</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.volcengine].modelName" placeholder="请输入模型名称" />
-              </li>
-              <li>
-                <div>
-                  联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.volcengine].internetSearch" :disabled="true" />
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!--- NewApi的api设置 -->
-          <div v-else-if="apiProvider === aiProvider.newapi" class="body">
-            <ul>
-              <li>
-                <p>NewApi接口地址</p>
-              </li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.newapi].baseUrl" placeholder="请输入NewApi的接口地址"></el-input>
-              </li>
-              <li>
-                <a href="https://docs.newapi.pro/api/openai-chat/" target="_blank"><p>获取NewApi地址</p></a>
-              </li>
-              <li><p>NewApi的Api密钥</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.newapi].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
-              </li>
-              <li>
-                <a href="https://docs.newapi.pro/guide/console/api-token/" target="_blank"><p>获取Api密钥</p></a>
-              </li>
-              <li><p>NewApi的模型名称</p></li>
-              <li>
-                <el-input v-model="aiModelApiSetting[aiProvider.newapi].modelName" placeholder="请输入模型名称" />
-              </li>
-              <li>
-                <div>
-                  联网搜索
-                  <el-switch v-model="aiModelApiSetting[aiProvider.newapi].internetSearch" :disabled="true" />
-                </div>
-              </li>
-            </ul>
-          </div>
+          <FadeOutTransition>
+            <div v-if="apiProvider === aiProvider.deepseek" class="body">
+              <ul>
+                <li><p>DeepSeek官方Api密钥</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.deepseek].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
+                </li>
+                <li>
+                  <a href="https://platform.deepseek.com/usage" target="_blank"><p>获取Api密钥</p></a>
+                </li>
+                <li>
+                  <div>
+                    深度思考
+                    <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].isDeep" />
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    联网搜索
+                    <el-switch v-model="aiModelApiSetting[aiProvider.deepseek].internetSearch" :disabled="true" />
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!-- 阿里云百炼的api设置 -->
+            <div v-else-if="apiProvider === aiProvider.alibaba" class="body">
+              <ul>
+                <li><p>阿里云百炼Api密钥</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.alibaba].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
+                </li>
+                <li>
+                  <a href="https://bailian.console.aliyun.com/#/home" target="_blank"><p>获取Api密钥</p></a>
+                </li>
+                <li><p>阿里云百炼模型名称</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.alibaba].modelName" placeholder="请输入模型名称" />
+                </li>
+                <li>
+                  <div>
+                    联网搜索
+                    <el-switch v-model="aiModelApiSetting[aiProvider.alibaba].internetSearch" :disabled="true" />
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!--- 硅基流动的api设置 -->
+            <div v-else-if="apiProvider === aiProvider.siliconflow" class="body">
+              <ul>
+                <li><p>硅基流动Api密钥</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.siliconflow].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
+                </li>
+                <li>
+                  <a href="https://cloud.siliconflow.cn/me/account/ak" target="_blank"><p>获取Api密钥</p></a>
+                </li>
+                <li><p>硅基流动模型名称</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.siliconflow].modelName" placeholder="请输入模型名称" />
+                </li>
+                <li>
+                  <div>
+                    联网搜索
+                    <el-switch v-model="aiModelApiSetting[aiProvider.siliconflow].internetSearch" :disabled="true" />
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!-- 火山引擎的api设置 -->
+            <div v-else-if="apiProvider === aiProvider.volcengine" class="body">
+              <ul>
+                <li><p>火山引擎的Api密钥</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.volcengine].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
+                </li>
+                <li>
+                  <a href="https://console.volcengine.com/ark" target="_blank"><p>获取Api密钥</p></a>
+                </li>
+                <li><p>火山引擎的模型名称</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.volcengine].modelName" placeholder="请输入模型名称" />
+                </li>
+                <li>
+                  <div>
+                    联网搜索
+                    <el-switch v-model="aiModelApiSetting[aiProvider.volcengine].internetSearch" :disabled="true" />
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!--- NewApi的api设置 -->
+            <div v-else-if="apiProvider === aiProvider.newapi" class="body">
+              <ul>
+                <li>
+                  <p>NewApi接口地址</p>
+                </li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.newapi].baseUrl" placeholder="请输入NewApi的接口地址"></el-input>
+                </li>
+                <li>
+                  <a href="https://docs.newapi.pro/api/openai-chat/" target="_blank"><p>获取NewApi地址</p></a>
+                </li>
+                <li><p>NewApi的Api密钥</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.newapi].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
+                </li>
+                <li>
+                  <a href="https://docs.newapi.pro/guide/console/api-token/" target="_blank"><p>获取Api密钥</p></a>
+                </li>
+                <li><p>NewApi的模型名称</p></li>
+                <li>
+                  <el-input v-model="aiModelApiSetting[aiProvider.newapi].modelName" placeholder="请输入模型名称" />
+                </li>
+                <li>
+                  <div>
+                    联网搜索
+                    <el-switch v-model="aiModelApiSetting[aiProvider.newapi].internetSearch" :disabled="true" />
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </FadeOutTransition>
         </el-row>
         <template #footer><el-button type="primary" @click="saveAIconfig">保存配置</el-button></template>
       </el-card>

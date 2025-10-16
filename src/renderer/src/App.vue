@@ -4,6 +4,7 @@ import { Sunset, MoonNight } from '@element-plus/icons-vue'
 import { useDark } from '@vueuse/core'
 import SvgIcon from './components/SvgIcon.vue'
 import { onMounted, ref } from 'vue'
+import FadeOutTransition from './components/FadeOutTransition.vue'
 
 // 深色模式切换按钮
 const colorMode = ref()
@@ -59,11 +60,11 @@ const colorModeToggle = async (): Promise<void> => {
       <el-col :span="22">
         <div class="routerView">
           <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
+            <FadeOutTransition>
               <keep-alive>
                 <component :is="Component" />
               </keep-alive>
-            </transition>
+            </FadeOutTransition>
           </router-view>
         </div>
       </el-col>
@@ -72,15 +73,6 @@ const colorModeToggle = async (): Promise<void> => {
 </template>
 
 <style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 .app {
   // background-color: red;
   // position: relative;
