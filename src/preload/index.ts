@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { UserConfig } from '../common/types/userConfig.interface'
+import { electronAPI } from '@electron-toolkit/preload'
 
 // 用户配置相关
 const userConfig = {
@@ -25,3 +26,4 @@ contextBridge.exposeInMainWorld('userConfig', userConfig)
 contextBridge.exposeInMainWorld('httpService', httpService)
 contextBridge.exposeInMainWorld('cacheManager', cacheManager)
 contextBridge.exposeInMainWorld('darkMode', darkMode)
+contextBridge.exposeInMainWorld('electron', electronAPI)

@@ -2,7 +2,7 @@
   "name": "dog-library",
   "version": "1.0.0",
   "description": "本地运行的AI题库",
-  "main": "./out/main/index.js",
+  "main": "./out/main/main.js",
   "author": "example.com",
   "homepage": "https://dog.xuxo.top",
   "scripts": {
@@ -21,6 +21,7 @@
     "build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
+    "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@microsoft/clarity": "^1.0.0",
     "@vueuse/core": "^13.9.0",

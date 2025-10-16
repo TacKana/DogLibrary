@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { ServiceManager } from './app/ServiceManager'
+import { ServiceManager } from './services/ServiceManager'
 
 function createWindow(): void {
   // 创建浏览器窗口。
@@ -25,6 +25,10 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+
+    //当窗口准备好后加载服务
+    const serviceManager = new ServiceManager()
+    serviceManager.init()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -69,8 +73,6 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
   createWindow()
-  const serviceManager = new ServiceManager()
-  serviceManager.init()
 })
 
 // 当所有窗口都关闭时退出，但 macOS 系统除外。在该系统上，应用程序及其菜单栏通常会保持活跃状态，直到用户通过 Cmd + Q 明确退出。

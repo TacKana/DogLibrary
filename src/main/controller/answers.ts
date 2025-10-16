@@ -5,7 +5,19 @@ import { ChatCompletionMessageParam } from 'openai/resources'
 import { CacheManager } from '../services/cache/cacheManager'
 import { questionType } from '../services/cache/schema/cache'
 
-export class AppController {
+/**
+ * 答案控制器类，负责处理题目答案的搜索和生成
+ *
+ * 该类通过 AI 管理和缓存管理来优化答案生成流程：
+ * - 优先从缓存中查找已有答案
+ * - 无缓存时调用 AI 生成答案并缓存结果
+ * - 支持多种题型（单选、多选、判断、填空等）的答案生成
+ *
+ * @class AnswersController
+ * @param aiManager - AI 管理器实例，用于调用 AI 对话服务
+ * @param cacheManager - 缓存管理器实例，用于答案的存储和查询
+ */
+export class AnswersController {
   constructor(
     private aiManager: AIManager,
     private cacheManager: CacheManager,

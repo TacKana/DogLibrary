@@ -1,5 +1,6 @@
-import { dialog, shell } from 'electron'
+import { dialog, shell, WebContentsView } from 'electron'
 import electronUpdater, { type AppUpdater } from 'electron-updater'
+import { webContents } from 'electron/main'
 
 export class UpdaterManager {
   updater: AppUpdater
@@ -31,25 +32,25 @@ export class UpdaterManager {
 
   // 有更新时的回调
   updateAvailable() {
-    dialog
-      .showMessageBox({
-        title: '狗库发布新版本啦',
-        message: '新版本带来了更好的体验，需要更新吗？',
-        type: 'info',
-        buttons: ['更新', '官网下载', '本次忽略'],
-      })
-      .then((res) => {
-        switch (res.response) {
-          case 0:
-            this.incrementalUpdate() // 增量更新
-            break
-          case 1:
-            shell.openExternal('https://dog.xuxo.top')
-            break
-          default:
-            break
-        }
-      })
+    // dialog
+    //   .showMessageBox({
+    //     title: '狗库发布新版本啦',
+    //     message: '新版本带来了更好的体验，需要更新吗？',
+    //     type: 'info',
+    //     buttons: ['更新', '官网下载', '本次忽略'],
+    //   })
+    //   .then((res) => {
+    //     switch (res.response) {
+    //       case 0:
+    //         this.incrementalUpdate() // 增量更新
+    //         break
+    //       case 1:
+    //         shell.openExternal('https://dog.xuxo.top')
+    //         break
+    //       default:
+    //         break
+    //     }
+    //   })
     // 这里可以调用你想要执行的更新提示方法
   }
 

@@ -5,7 +5,7 @@ import { NetworkConfig } from '../../../common/types/userConfig.interface'
 import { searchSchema } from './schema/search.schema'
 import { UserConfigManager } from '../config/userConfig'
 import { AIManager } from '../ai/AI'
-import { AppController } from '../../app/appController'
+import { AppController } from '../../controller/answers'
 import os from 'os'
 /**
  * HTTP 服务管理器

@@ -9,6 +9,7 @@ files:
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!drizzle.config.ts'
   # 移除对 better-sqlite3 和 .node 文件的排除，确保原生模块被包含
   # - '!node_modules/better-sqlite3'  <-- 删除这行
   # - '!out/main/chunks/*.node'      <-- 删除这行

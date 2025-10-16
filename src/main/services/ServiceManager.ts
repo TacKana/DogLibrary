@@ -1,9 +1,9 @@
-import { AppController } from './appController'
-import { AIManager } from '../services/ai/AI'
-import { UserConfigManager } from '../services/config/userConfig'
-import { HttpManager } from '../services/http/httpManager'
-import { CacheManager } from '../services/cache/cacheManager'
-import { UpdaterManager } from '../services/updater/updaterManager'
+import { AnswersController } from '../controller/answers'
+import { AIManager } from './ai/AI'
+import { UserConfigManager } from './config/userConfig'
+import { HttpManager } from './http/httpManager'
+import { CacheManager } from './cache/cacheManager'
+import { UpdaterManager } from './updater/updaterManager'
 
 /**
  * 全局服务管理器，负责统一创建与初始化所有核心服务。
@@ -22,7 +22,7 @@ export class ServiceManager {
   private userConfigManager: UserConfigManager
   private httpManager: HttpManager
   private aIManager: AIManager
-  private appController: AppController
+  private appController: AnswersController
   private cacheManager: CacheManager
   private updaterManager: UpdaterManager
 
@@ -30,7 +30,7 @@ export class ServiceManager {
     this.userConfigManager = new UserConfigManager()
     this.cacheManager = new CacheManager()
     this.aIManager = new AIManager(this.userConfigManager)
-    this.appController = new AppController(this.aIManager, this.cacheManager)
+    this.appController = new AnswersController(this.aIManager, this.cacheManager)
     this.httpManager = new HttpManager(this.userConfigManager, this.aIManager, this.appController)
     this.updaterManager = new UpdaterManager()
   }
