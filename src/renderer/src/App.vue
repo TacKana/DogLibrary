@@ -17,9 +17,11 @@ onMounted(async () => {
 })
 
 const colorModeToggle = async (): Promise<void> => {
-  await window.darkMode.toggle()
-  colorMode.value === true ? (colorMode.value = true) : (colorMode.value = false)
-  useDark()
+  setTimeout(async () => {
+    await window.darkMode.toggle()
+    colorMode.value === true ? (colorMode.value = true) : (colorMode.value = false)
+    useDark()
+  }, 200)
 }
 </script>
 
