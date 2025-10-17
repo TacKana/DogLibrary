@@ -152,35 +152,20 @@ export class HttpManager {
     })
     ipcMain.handle('getLocalIP', () => this.getLocalIP())
   }
+
   /**
-   * 获取本机的IPv4地址
+   * 获取本地IPv4地址
    *
-   * 该方法会遍历所有网络接口，返回第一个非内部IPv4地址
-   * 主要用于获取本机在网络中的实际IP地址
+   * 该方法会遍历所有网络接口，排除虚拟网卡（如docker、vmnet、virtual等），
+   * 返回第一个找到的非内部IPv4地址。如果找不到合适的地址，则返回'127.0.0.1'
    *
-   * @returns 返回找到的IPv4地址字符串，如果未找到则返回127.0.0.1
+   * @returns 本地IPv4地址字符串
    */
   private getLocalIP(): string {
-    for (const [key, value] of Object.entries(os.networkInterfaces())) {
-      if (key.includes('docker')) {
-        continue
-      }
-      if (key.includes('vmnet')) {
-        continue
-      }
-      if (key.includes('virtual')) {
-        continue
-      }
-      if (key.includes('VMware')) {
-        continue
-      }
-      if (key.includes('veth')) {
-        continue
-      }
-      if (key.includes('br-')) {
-        continue
-      }
-      if (key.includes('virbr')) {
+    const virtualInterfacePatterns = ['docker', 'vmnet', 'virtual', 'VMware', 'veth', 'br-', 'virbr']
+    for (const [networkCard, value] of Object.entries(os.networkInterfaces())) {
+      // 将所有网卡名字转换成小写后循环遍历排处虚拟网卡
+      if (virtualInterfacePatterns.some((items) => networkCard.toLowerCase().includes(items.toLowerCase()))) {
         continue
       }
       for (const net of value || []) {
