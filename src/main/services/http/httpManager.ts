@@ -158,14 +158,37 @@ export class HttpManager {
    * 该方法会遍历所有网络接口，返回第一个非内部IPv4地址
    * 主要用于获取本机在网络中的实际IP地址
    *
-   * @returns 返回找到的IPv4地址字符串，如果未找到则返回undefined
+   * @returns 返回找到的IPv4地址字符串，如果未找到则返回127.0.0.1
    */
   private getLocalIP(): string {
-    for (const net of Object.values(os.networkInterfaces()).flat()) {
-      if (net && net.family === 'IPv4' && !net.internal) {
-        return net.address
+    for (const [key, value] of Object.entries(os.networkInterfaces())) {
+      if (key.includes('docker')) {
+        continue
+      }
+      if (key.includes('vmnet')) {
+        continue
+      }
+      if (key.includes('virtual')) {
+        continue
+      }
+      if (key.includes('VMware')) {
+        continue
+      }
+      if (key.includes('veth')) {
+        continue
+      }
+      if (key.includes('br-')) {
+        continue
+      }
+      if (key.includes('virbr')) {
+        continue
+      }
+      for (const net of value || []) {
+        if (net.family === 'IPv4' && !net.internal) {
+          return net.address
+        }
       }
     }
-    return 'localhost'
+    return '127.0.0.1'
   }
 }
