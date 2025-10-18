@@ -55,7 +55,7 @@ async function saveNetworkConfig(): Promise<void> {
 <template>
   <div class="network">
     <div class="card">
-      <el-card>
+      <el-card shadow="hover">
         <template #header>
           <div class="card-header">
             <span>网络设置</span>

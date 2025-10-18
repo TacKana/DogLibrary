@@ -18,7 +18,7 @@ function reset(): void {
 <template>
   <div class="other">
     <div class="card">
-      <el-card>
+      <el-card shadow="hover">
         <template #header>
           <div class="card-header">
             <span>其他设置</span>

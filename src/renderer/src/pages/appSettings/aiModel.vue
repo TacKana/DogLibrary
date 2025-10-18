@@ -76,7 +76,7 @@ async function saveAIconfig(): Promise<void> {
 <template>
   <div class="aiModel">
     <div class="card">
-      <el-card>
+      <el-card shadow="hover">
         <template #header>
           <div class="card-header">
             <span>API提供商</span>
@@ -97,7 +97,7 @@ async function saveAIconfig(): Promise<void> {
       </el-card>
     </div>
     <div class="card">
-      <el-card>
+      <el-card shadow="hover">
         <template #header>
           <div class="card-header">
             <span>{{ apiProvider }}</span>
