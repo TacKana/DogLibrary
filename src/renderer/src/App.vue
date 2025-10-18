@@ -61,6 +61,15 @@ const colorModeToggle = async (): Promise<void> => {
                 </div>
               </RouterLink>
             </li>
+            <li>
+              <RouterLink active-class="active" to="/about">
+                <div class="button">
+                  <el-icon size="24px">
+                    <SvgIcon icon-class="icon-wode" />
+                  </el-icon>
+                </div>
+              </RouterLink>
+            </li>
           </ul>
         </div>
       </el-col>

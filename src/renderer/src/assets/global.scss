@@ -22,3 +22,8 @@ html.dark {
   --sidebar-text-color: #e5e7eb;
   --nav-list-bg-color: #313131;
 }
+
+// 隐藏滚动条
+::-webkit-scrollbar {
+  width: 0px; /*滚动条宽度*/
+}
