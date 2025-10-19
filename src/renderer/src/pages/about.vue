@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElImage, ElRow, ElCol, ElText, ElCard, ElIcon } from 'element-plus'
+import { ElImage, ElRow, ElCol, ElText, ElCard, ElIcon, ElMessage } from 'element-plus'
 import SvgIcon from '@renderer/components/SvgIcon.vue'
 import icon from '../assets/icon.png'
 import { onMounted, ref } from 'vue'
@@ -8,6 +8,10 @@ import { onMounted, ref } from 'vue'
 const versions = ref()
 onMounted(() => (versions.value = window.electron.process.env.npm_package_version!))
 // --- 版本号 END ---
+
+function updates(): void {
+  ElMessage.success('当前已是最新版本')
+}
 </script>
 
 <template>
@@ -25,28 +29,42 @@ onMounted(() => (versions.value = window.electron.process.env.npm_package_versio
             <el-card shadow="hover">
               <ul>
                 <li>
-                  <p>访问狗库官网</p>
-                  <el-icon size="20px">
-                    <SvgIcon icon-class="icon-right" />
-                  </el-icon>
+                  <a href="https://dog.xuxo.top" target="_blank">
+                    <el-text size="large">访问狗库官网</el-text>
+                    <el-icon size="20px">
+                      <SvgIcon icon-class="icon-right" />
+                    </el-icon>
+                  </a>
                 </li>
                 <li>
-                  <p>检查更新</p>
-                  <el-icon size="20px">
-                    <SvgIcon icon-class="icon-right" />
-                  </el-icon>
+                  <a href="https://element-plus.org" target="_blank">
+                    <el-text size="large">交流群</el-text>
+                    <el-icon size="20px">
+                      <SvgIcon icon-class="icon-right" />
+                    </el-icon>
+                  </a>
                 </li>
                 <li>
-                  <p>交流群</p>
-                  <el-icon size="20px">
-                    <SvgIcon icon-class="icon-right" />
-                  </el-icon>
+                  <a href="https://element-plus.org" target="_blank">
+                    <el-text size="large">反馈问题</el-text>
+                    <el-icon size="20px">
+                      <SvgIcon icon-class="icon-right" />
+                    </el-icon>
+                  </a>
                 </li>
+              </ul>
+            </el-card>
+          </div>
+          <div class="card">
+            <el-card shadow="hover" style="cursor: pointer" @click="updates">
+              <ul>
                 <li>
-                  <p>反馈问题</p>
-                  <el-icon size="20px">
-                    <SvgIcon icon-class="icon-right" />
-                  </el-icon>
+                  <a>
+                    <el-text size="large">检查更新</el-text>
+                    <el-icon size="20px">
+                      <SvgIcon icon-class="icon-right" />
+                    </el-icon>
+                  </a>
                 </li>
               </ul>
             </el-card>
@@ -70,12 +88,15 @@ onMounted(() => (versions.value = window.electron.process.env.npm_package_versio
       display: flex;
       flex-direction: column;
       align-items: center;
+
       p {
         padding-top: 15px;
       }
     }
+
     .card {
       padding-top: 40px;
+
       :deep(.el-card) {
         border-radius: 24px;
         // border: 0;
@@ -83,9 +104,12 @@ onMounted(() => (versions.value = window.electron.process.env.npm_package_versio
         ul {
           li {
             padding: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+
+            a {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            }
           }
         }
       }
