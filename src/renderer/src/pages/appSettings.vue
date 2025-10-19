@@ -58,8 +58,9 @@ import FadeOutTransition from '@renderer/components/FadeOutTransition.vue'
   }
   .active {
     .button {
-      background-color: #e3f2fd;
-      border: #61b0e8 dashed 1px;
+      background-color: #787878;
+      border: #61b0e8 solid 1px;
+      color: #ffffff;
     }
   }
   .body {

@@ -20,7 +20,7 @@
  * - 主要用于“应用设置-模型配置”页面，为用户提供直观、便捷的 AI 提供商切换与参数配置功能。
  */
 
-import { ElCard, ElRow, ElCol, ElSelect, ElOption, ElInput, ElSwitch, ElButton, ElMessage } from 'element-plus'
+import { ElCard, ElRow, ElCol, ElSelect, ElOption, ElInput, ElSwitch, ElButton, ElMessage, ElText } from 'element-plus'
 import { onMounted, ref, toRaw } from 'vue'
 import { aiProvider } from '@common/types/aiProvider.enum'
 import { AiProviderConfig } from '@common/types/config'
@@ -113,7 +113,9 @@ async function saveAIconfig(): Promise<void> {
                   <el-input v-model="aiModelApiSetting[aiProvider.deepseek].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
                 </li>
                 <li>
-                  <a href="https://platform.deepseek.com/usage" target="_blank"><p>获取Api密钥</p></a>
+                  <a href="https://platform.deepseek.com/usage" target="_blank"
+                    ><p><el-text type="primary">获取Api密钥</el-text></p></a
+                  >
                 </li>
                 <li>
                   <div>
@@ -137,7 +139,9 @@ async function saveAIconfig(): Promise<void> {
                   <el-input v-model="aiModelApiSetting[aiProvider.alibaba].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
                 </li>
                 <li>
-                  <a href="https://bailian.console.aliyun.com/#/home" target="_blank"><p>获取Api密钥</p></a>
+                  <a href="https://bailian.console.aliyun.com/#/home" target="_blank"
+                    ><p><el-text type="primary">获取Api密钥</el-text></p></a
+                  >
                 </li>
                 <li><p>阿里云百炼模型名称</p></li>
                 <li>
@@ -159,7 +163,9 @@ async function saveAIconfig(): Promise<void> {
                   <el-input v-model="aiModelApiSetting[aiProvider.siliconflow].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
                 </li>
                 <li>
-                  <a href="https://cloud.siliconflow.cn/me/account/ak" target="_blank"><p>获取Api密钥</p></a>
+                  <a href="https://cloud.siliconflow.cn/me/account/ak" target="_blank"
+                    ><p><el-text type="primary">获取Api密钥</el-text></p></a
+                  >
                 </li>
                 <li><p>硅基流动模型名称</p></li>
                 <li>
@@ -181,7 +187,9 @@ async function saveAIconfig(): Promise<void> {
                   <el-input v-model="aiModelApiSetting[aiProvider.volcengine].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
                 </li>
                 <li>
-                  <a href="https://console.volcengine.com/ark" target="_blank"><p>获取Api密钥</p></a>
+                  <a href="https://console.volcengine.com/ark" target="_blank"
+                    ><p><el-text type="primary">获取Api密钥</el-text></p></a
+                  >
                 </li>
                 <li><p>火山引擎的模型名称</p></li>
                 <li>
@@ -205,14 +213,18 @@ async function saveAIconfig(): Promise<void> {
                   <el-input v-model="aiModelApiSetting[aiProvider.newapi].baseUrl" placeholder="请输入NewApi的接口地址"></el-input>
                 </li>
                 <li>
-                  <a href="https://docs.newapi.pro/api/openai-chat/" target="_blank"><p>获取NewApi地址</p></a>
+                  <a href="https://docs.newapi.pro/api/openai-chat/" target="_blank"
+                    ><p><el-text type="primary">获取NewApi地址</el-text></p></a
+                  >
                 </li>
                 <li><p>NewApi的Api密钥</p></li>
                 <li>
                   <el-input v-model="aiModelApiSetting[aiProvider.newapi].apiKey" placeholder="请输入API密钥 (YOUR_API_KEY_HERE)" />
                 </li>
                 <li>
-                  <a href="https://docs.newapi.pro/guide/console/api-token/" target="_blank"><p>获取Api密钥</p></a>
+                  <a href="https://docs.newapi.pro/guide/console/api-token/" target="_blank"
+                    ><p><el-text type="primary">获取Api密钥</el-text></p></a
+                  >
                 </li>
                 <li><p>NewApi的模型名称</p></li>
                 <li>

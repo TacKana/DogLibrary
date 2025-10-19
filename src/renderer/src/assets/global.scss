@@ -5,6 +5,7 @@
 }
 a {
   text-decoration: none; /* 去掉所有链接的下划线 */
+  color: #808080;
 }
 .router-link-active {
   text-decoration: none; /* 去掉激活状态下的下划线 */
@@ -14,7 +15,7 @@ a {
 :root {
   --sidebar-bg-color: #ececec;
   --sidebar-text-color: #333;
-  --nav-list-bg-color: #d6d6d6;
+  --nav-list-bg-color: #f5f5f5;
 }
 
 html.dark {
