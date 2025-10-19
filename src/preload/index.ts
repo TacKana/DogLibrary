@@ -23,8 +23,12 @@ const darkMode = {
   toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
   get: () => ipcRenderer.invoke('dark-mode:get'),
 }
+const update = {
+  check: () => ipcRenderer.invoke('check-Update'),
+}
 contextBridge.exposeInMainWorld('Config', config)
 contextBridge.exposeInMainWorld('httpService', httpService)
 contextBridge.exposeInMainWorld('cacheManager', cacheManager)
 contextBridge.exposeInMainWorld('darkMode', darkMode)
 contextBridge.exposeInMainWorld('electron', electronAPI)
+contextBridge.exposeInMainWorld('update', update)

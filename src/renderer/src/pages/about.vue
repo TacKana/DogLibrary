@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElImage, ElRow, ElCol, ElText, ElCard, ElIcon, ElMessage } from 'element-plus'
+import { ElImage, ElRow, ElCol, ElText, ElCard, ElIcon } from 'element-plus'
 import SvgIcon from '@renderer/components/SvgIcon.vue'
 import icon from '../assets/icon.png'
 import { onMounted, ref } from 'vue'
@@ -10,7 +10,7 @@ onMounted(() => (versions.value = window.electron.process.env.npm_package_versio
 // --- 版本号 END ---
 
 function updates(): void {
-  ElMessage.success('当前已是最新版本')
+  window.update.check()
 }
 </script>
 

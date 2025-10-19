@@ -26,5 +26,8 @@ declare global {
       toggle: () => Promise<boolean>
       get: () => Promise<boolean>
     }
+    update: {
+      check: () => Promise<void>
+    }
   }
 }

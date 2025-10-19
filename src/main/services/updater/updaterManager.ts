@@ -1,4 +1,4 @@
-import { app, dialog, shell } from 'electron'
+import { app, dialog, ipcMain, shell } from 'electron'
 import electronUpdater, { type AppUpdater } from 'electron-updater'
 
 export class UpdaterManager {
@@ -23,7 +23,8 @@ export class UpdaterManager {
     this.updater.on('update-not-available', () => this.updateNotAvailable())
     this.updater.on('error', (err: Error) => this.updateError(err))
     this.updater.on('update-downloaded', () => this.updateDownloaded())
-    this.checkForUpdates()
+    ipcMain.removeHandler('check-update')
+    ipcMain.handle('check-Update', () => this.checkForUpdates())
   }
 
   /**
@@ -75,6 +76,9 @@ export class UpdaterManager {
   // 更新过程中发生错误的回调
   updateError(err: Error): void {
     const errStr = JSON.stringify(err.stack)
+    if (err.message === 'net::ERR_CONNECTION_REFUSED') {
+      return
+    }
     dialog
       .showMessageBox({
         title: '更新出错！！！',
