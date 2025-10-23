@@ -36,7 +36,7 @@ async function switchServer(): Promise<void> {
     [
       {
         name: '狗库',
-        homepage: 'http://dogku.xuxo.top',
+        homepage: 'http://dog.xuxo.top',
         url: `http://${config.value?.network?.isLAN ? ip.value : 'localhost'}:${config.value?.network?.port}/search`,
         method: 'get',
         type: 'GM_xmlhttpRequest',

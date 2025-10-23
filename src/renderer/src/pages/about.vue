@@ -37,7 +37,7 @@ function updates(): void {
                   </a>
                 </li>
                 <li>
-                  <a href="https://element-plus.org" target="_blank">
+                  <a href="https://dog.xuxo.top/docs/communicationGroup.html" target="_blank">
                     <el-text size="large">交流群</el-text>
                     <el-icon size="20px">
                       <SvgIcon icon-class="icon-right" />
@@ -45,7 +45,7 @@ function updates(): void {
                   </a>
                 </li>
                 <li>
-                  <a href="https://element-plus.org" target="_blank">
+                  <a href="https://wj.qq.com/s2/24506781/2e78/" target="_blank">
                     <el-text size="large">反馈问题</el-text>
                     <el-icon size="20px">
                       <SvgIcon icon-class="icon-right" />
