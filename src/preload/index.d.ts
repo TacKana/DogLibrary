@@ -29,5 +29,8 @@ declare global {
     update: {
       check: () => Promise<void>
     }
+    version: {
+      get: () => Promise<string>
+    }
   }
 }

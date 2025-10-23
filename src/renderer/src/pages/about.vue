@@ -4,9 +4,15 @@ import SvgIcon from '@renderer/components/SvgIcon.vue'
 import icon from '../assets/icon.png'
 import { onMounted, ref } from 'vue'
 
-// --- 版本号 ---
+// --- 版本信息 ---
 const versions = ref()
-onMounted(() => (versions.value = window.electron.process.env.npm_package_version!))
+const osName = ref()
+onMounted(async () => {
+  osName.value = window.electron.process.env.OS!
+  versions.value = await window.version.get()
+  console.log(versions.value)
+})
+
 // --- 版本号 END ---
 
 function updates(): void {
@@ -22,7 +28,7 @@ function updates(): void {
         <div class="body">
           <div class="info">
             <el-image :src="icon" style="width: 100px; height: 100px" fit="cover" />
-            <p>狗库AI题库Windows</p>
+            <p>狗库AI题库{{ osName }}</p>
             <el-text type="info">Version{{ versions }}</el-text>
           </div>
           <div class="card">
