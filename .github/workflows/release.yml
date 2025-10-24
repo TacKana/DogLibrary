@@ -2,8 +2,8 @@ name: Build/release Electron app
 
 on:
   push:
-    tags:
-      - v*.*.*
+    branches:
+      - master
 
 jobs:
   release:
