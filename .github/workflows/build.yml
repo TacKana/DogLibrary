@@ -1,70 +1,58 @@
-name: Build and Release
+// build.yml
+name: Build
 
 on:
-  push:
-    branches:
-      - master
+    push:
+        branches:
+          - master
 
 jobs:
-  release:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    
-    # strategy 应该在 job 内部
+    release:
+        name: build and release electron app
+        runs-on: ${{ matrix.os }}
+        
     strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        include:
-          - os: windows-latest
-            artifact_pattern: "*.exe"
-          - os: macos-latest  
-            artifact_pattern: "*.dmg"
-          - os: ubuntu-latest
-            artifact_pattern: "*.AppImage"
+        fail-fast: false
+        matrix:
+          os: [windows-latest, macos-latest, ubuntu-latest]
             
     steps:
-      - name: Check out git repository
-        uses: actions/checkout@v3
+        - name: Check out git repository
+          uses: actions/checkout@v3.0.0
         
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22"  # 推荐使用 LTS 版本
-          cache: 'npm'  # 添加缓存加速安装
+        - name: Install Node.js
+          uses: actions/setup-node@v3.0.0
+          with:
+            node-version: "16"
+            
+        - name: Install Dependencies
+          run: npm install
           
-      - name: Install Dependencies
-        run: npm ci  # 使用 npm ci 替代 npm install，更可靠
+        - name: Build Electron App
+          run: npm run dist
+          env:
+            GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         
-      - name: Build Electron App
-        run: npm run dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # 添加代码签名环境变量（根据你的需求配置）
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          # Windows 代码签名
-          CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
-          CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-          
-      - name: Cleanup Artifacts
-        run: |
-          # 使用更通用的清理方式
-          cd dist
-          # 保留匹配模式的文件，删除其他
-          find . -type f ! -name '${{ matrix.artifact_pattern }}' -delete
-          
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: electron-app-${{ matrix.os }}
-          path: dist/
-          
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: dist/**
-          generate_release_notes: true  # 自动生成发布说明
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 推荐使用默认的 GITHUB_TOKEN
+        - name: Cleanup Artifacts for Windows
+          if: matrix.os == 'windows-latest'
+          run: |
+            npx rimraf "dist/!(*.exe)"
+        
+        - name: Cleanup Artifacts for MacOS
+          if: matrix.os == 'macos-latest'
+          run: |
+            npx rimraf "dist/!(*.dmg)"
+            
+        - name: upload artifacts
+          uses: actions/upload-artifact@v3.0.0
+          with:
+            name: ${{ matrix.os }}
+            path: dist
+            
+        - name: release
+          uses: softprops/action-gh-release@v0.1.14
+          if: startsWith(github.ref, 'refs/tags/')
+          with:
+            files: "dist/**"
+          env:
+            GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
