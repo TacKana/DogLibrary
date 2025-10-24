@@ -6,11 +6,21 @@
 a {
   text-decoration: none; /* 去掉所有链接的下划线 */
   color: #808080;
+  -webkit-user-drag: none; /* 禁止被拖动 */
 }
 .router-link-active {
   text-decoration: none; /* 去掉激活状态下的下划线 */
 }
+// 禁止文字被选中
+body {
+  -webkit-user-select: none;
 
+  -moz-user-select: none;
+
+  -ms-user-select: none;
+
+  user-select: none;
+}
 // 定义全局主题变量
 :root {
   --sidebar-bg-color: #ececec;
