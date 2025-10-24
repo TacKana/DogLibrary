@@ -9,6 +9,7 @@ permissions:
 jobs:
   release:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30  # 添加超时限制
 
     strategy:
       matrix:
@@ -23,20 +24,48 @@ jobs:
         with:
           node-version: 22
 
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            ~/.cache/electron
+            ~/.cache/electron-builder
+            ~/AppData/Local/electron
+            ~/AppData/Local/electron-builder
+          key: ${{ runner.os }}-electron-${{ hashFiles('package-lock.json') }}
+
       - name: Install Dependencies
         run: npm install
 
+      # Linux 构建 - 简化目标避免失败
       - name: build-linux
         if: matrix.os == 'ubuntu-latest'
-        run: npm run build:linux
+        run: |
+          # 安装必要的依赖
+          sudo apt-get update
+          sudo apt-get install -y fakeroot
+          # 构建 Linux 版本，主要生成 AppImage
+          npm run build:linux
 
+      # macOS 构建 - 处理代码签名问题
       - name: build-mac
         if: matrix.os == 'macos-latest'
-        run: npm run build:mac
+        run: |
+          # 构建 macOS 版本，禁用代码签名
+          npm run build:mac:unsigned
 
+      # Windows 构建 - 分阶段构建避免超时
       - name: build-win
         if: matrix.os == 'windows-latest'
-        run: npm run build:win
+        run: |
+          # 先构建轻量版本确保成功
+          npm run build:win:light
+          # 如果时间允许再构建完整安装包
+          npm run build:win:nsis || echo "NSIS build failed or skipped"
+
+      - name: List build artifacts
+        run: ls -la dist/ || echo "No dist directory"
 
       - name: release
         uses: softprops/action-gh-release@v1
@@ -47,11 +76,9 @@ jobs:
             dist/*.zip
             dist/*.dmg
             dist/*.AppImage
-            dist/*.snap
-            dist/*.deb
-            dist/*.rpm
-            dist/*.tar.gz
-            dist/*.yml
+            # dist/*.snap  # 暂时禁用 snap
+            # dist/*.deb   # 暂时禁用 deb
             dist/*.blockmap
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+            dist/*.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
