@@ -1,9 +1,9 @@
 {
   "name": "dog-library",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "description": "本地运行的AI题库",
   "main": "./out/main/main.js",
-  "author": "example.com",
+  "author": "dog.xuxo.top",
   "homepage": "https://dog.xuxo.top",
   "scripts": {
     "format": "prettier --write .",
