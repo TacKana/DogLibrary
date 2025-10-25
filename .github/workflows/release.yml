@@ -3,10 +3,10 @@ name: Build and Release
 on:
   push:
     tags:
-      - v*.*.*  # 只在打 tag（v1.2.3）时触发
+      - v*.*.* # 只在打 tag（v1.2.3）时触发
 
 permissions:
-  contents: write  # 用于创建 Release、上传文件等操作
+  contents: write # 用于创建 Release、上传文件等操作
 
 jobs:
   build:
@@ -33,17 +33,18 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22
-          cache: npm  # actions/setup-node 内置 npm 缓存支持（配合上面的 cache 双保险）
+          cache: npm # actions/setup-node 内置 npm 缓存支持（配合上面的 cache 双保险）
 
       - name: 安装依赖
-        run: npm ci  # 比 npm install 更可靠（基于 lock 文件）
+        run: npm ci # 比 npm install 更可靠（基于 lock 文件）
 
       # 🧱 各平台分别构建
       - name: 构建 Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
+          sudo snap install snapcraft --classic
           sudo apt-get update
-          sudo apt-get install -y snapcraft fakeroot
+          sudo apt-get install -y fakeroot
           npm run build:linux
 
       - name: 构建 macOS
@@ -68,7 +69,7 @@ jobs:
   release:
     name: 创建 GitHub 发布
     runs-on: ubuntu-latest
-    needs: build  # 等待上面所有平台构建完成
+    needs: build # 等待上面所有平台构建完成
     permissions:
       contents: write
 
@@ -84,7 +85,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          draft: true  # 先生成草稿，方便预览
+          draft: true # 先生成草稿，方便预览
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
