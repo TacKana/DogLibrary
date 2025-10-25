@@ -1,59 +1,74 @@
-name: Build the release version
+name: Build and Release
 
 on:
   push:
     tags:
-      - v*.*.*
-# 🔑 关键修复：添加权限配置
+      - v*.*.*  # 只在打 tag（v1.2.3）时触发
+
 permissions:
-  contents: write  # 授予创建发布的权限
- 
+  contents: write  # 用于创建 Release、上传文件等操作
+
 jobs:
-  release:
-    name: 开始构建
-    runs-on: ${{matrix.os}}
+  build:
+    name: 构建 ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
-        - name: 提取代码
-          uses: actions/checkout@v5
-        - name: 安装nodejs
-          uses: actions/setup-node@v5
-          with:
-            node-version: 22
-        - name: 安装依赖
-          run: npm install
-        - name: 构建linux
-          env:
-            SNAPCRAFT_STORE_CREDENTIALS: ${{secrets.SNAPCRAFT_STORE_CREDENTIALS}}
-          if: matrix.os == 'ubuntu-latest'
-          run:  |
-            sudo snap install snapcraft --classic
-            sudo apt-get update
-            sudo apt-get install -y fakeroot
-            npm run build:linux
+      - name: 检出代码
+        uses: actions/checkout@v5
 
-        - name: 构建macos
-          if: matrix.os == 'macos-latest'
-          run: npm run build:mac
+      # 🧩 缓存 npm 依赖，加速构建
+      - name: 缓存 npm 依赖
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-        - name: 构建windows
-          if: matrix.os == 'windows-latest'
-          run: npm run build:win
-        - name: 上传构建产物
-          uses: actions/upload-artifact@v4
-          with:
-            name: build-artifacts-${{ matrix.os }}
-            path: |
-              dist/**/*
-              !dist/node_modules/
-            retention-days: 7
-    # 新增：单独的发布作业
-  create-release:     
-    name: 创建发布
+      - name: 安装 Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm  # actions/setup-node 内置 npm 缓存支持（配合上面的 cache 双保险）
+
+      - name: 安装依赖
+        run: npm ci  # 比 npm install 更可靠（基于 lock 文件）
+
+      # 🧱 各平台分别构建
+      - name: 构建 Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y snapcraft fakeroot
+          npm run build:linux
+
+      - name: 构建 macOS
+        if: matrix.os == 'macos-latest'
+        run: npm run build:mac
+
+      - name: 构建 Windows
+        if: matrix.os == 'windows-latest'
+        run: npm run build:win
+
+      # 📦 上传每个平台的构建结果
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: |
+            dist/**/*
+            !dist/node_modules/
+          retention-days: 7
+
+  # 🚀 Release 作业：汇总构建产物并创建发布
+  release:
+    name: 创建 GitHub 发布
     runs-on: ubuntu-latest
-    needs: release  # 依赖构建作业完成
+    needs: build  # 等待上面所有平台构建完成
     permissions:
       contents: write
 
@@ -62,13 +77,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: dist-all/
-          
-      - name: 创建GitHub发布
+
+      # 🧾 自动生成 Release 说明（基于提交记录）
+      - name: 自动生成 Release Notes
+        id: notes
         uses: softprops/action-gh-release@v2
         with:
+          generate_release_notes: true
+          draft: true  # 先生成草稿，方便预览
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 🪄 上传 Release 资产并发布
+      - name: 发布 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
           draft: false
           fail_on_unmatched_files: false
-          replace: true
           files: |
             dist-all/**/*.exe
             dist-all/**/*.zip
@@ -80,5 +106,6 @@ jobs:
             dist-all/**/*.tar.gz
             dist-all/**/*.yml
             dist-all/**/*.blockmap
+          body: ${{ steps.notes.outputs.body }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 建议使用内置token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
