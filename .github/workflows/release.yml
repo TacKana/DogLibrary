@@ -1,84 +1,51 @@
-name: Build/release Electron app
+name: Build the release version
 
 on:
   push:
     tags:
       - v*.*.*
-permissions:
-  contents: write
+      
 jobs:
   release:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30  # 添加超时限制
-
+    name: 开始构建
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+        - name: 提取代码
+          uses: actions/checkout@v5
+        - name: 安装nodejs
+          uses: actions/setup-node@v5
+          with:
+            node-version: 22
+        - name: 安装依赖
+          run: npm install
+        - name: 构建linux
+          if: matrix.os == 'ubuntu-latest'
+          run: npm run build:linux
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22
+        - name: 构建macos
+          if: matrix.os == 'macos-latest'
+          run: npm run build:mac
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            ~/.cache/electron
-            ~/.cache/electron-builder
-            ~/AppData/Local/electron
-            ~/AppData/Local/electron-builder
-          key: ${{ runner.os }}-electron-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Dependencies
-        run: npm install
-
-      # Linux 构建 - 简化目标避免失败
-      - name: build-linux
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          # 安装必要的依赖
-          sudo apt-get update
-          sudo apt-get install -y fakeroot
-          # 构建 Linux 版本，主要生成 AppImage
-          npm run build:linux
-
-      # macOS 构建 - 处理代码签名问题
-      - name: build-mac
-        if: matrix.os == 'macos-latest'
-        run: |
-          # 构建 macOS 版本，禁用代码签名
-          npm run build:mac:unsigned
-
-      # Windows 构建 - 分阶段构建避免超时
-      - name: build-win
-        if: matrix.os == 'windows-latest'
-        run: |
-          # 先构建轻量版本确保成功
-          npm run build:win:light
-          # 如果时间允许再构建完整安装包
-          npm run build:win:nsis || echo "NSIS build failed or skipped"
-
-      - name: List build artifacts
-        run: ls -la dist/ || echo "No dist directory"
-
-      - name: release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          files: |
-            dist/*.exe
-            dist/*.zip
-            dist/*.dmg
-            dist/*.AppImage
-            # dist/*.snap  # 暂时禁用 snap
-            # dist/*.deb   # 暂时禁用 deb
-            dist/*.blockmap
-            dist/*.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: 构建windows
+          if: matrix.os == 'windows-latest'
+          run: npm run build:win
+        - name: 发布
+          uses: softprops/action-gh-release@v2
+          with:
+            draft: true
+            files: |
+              dist/*.exe
+              dist/*.zip
+              dist/*.dmg
+              dist/*.AppImage
+              dist/*.snap
+              dist/*.deb
+              dist/*.rpm
+              dist/*.tar.gz
+              dist/*.yml
+              dist/*.blockmap
+          env:
+            GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
