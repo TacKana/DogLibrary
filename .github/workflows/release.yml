@@ -4,7 +4,10 @@ on:
   push:
     tags:
       - v*.*.*
-      
+# 🔑 关键修复：添加权限配置
+permissions:
+  contents: write  # 授予创建发布的权限
+ 
 jobs:
   release:
     name: 开始构建
@@ -51,6 +54,10 @@ jobs:
     name: 创建发布
     runs-on: ubuntu-latest
     needs: release  # 依赖构建作业完成
+        # 🔑 确保发布作业有足够权限
+    permissions:
+      contents: write
+
     steps:
       - name: 下载所有构建产物
         uses: actions/download-artifact@v4
