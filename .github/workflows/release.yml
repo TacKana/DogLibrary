@@ -50,11 +50,10 @@ jobs:
               !dist/node_modules/
             retention-days: 7
     # 新增：单独的发布作业
-  create-release:
+  create-release:     
     name: 创建发布
     runs-on: ubuntu-latest
     needs: release  # 依赖构建作业完成
-        # 🔑 确保发布作业有足够权限
     permissions:
       contents: write
 
@@ -67,7 +66,9 @@ jobs:
       - name: 创建GitHub发布
         uses: softprops/action-gh-release@v2
         with:
-          draft: true
+          draft: false
+          fail_on_unmatched_files: false
+          replace: true
           files: |
             dist-all/**/*.exe
             dist-all/**/*.zip
