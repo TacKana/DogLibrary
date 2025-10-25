@@ -48,7 +48,7 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: dog.xuxo.top
   category: Utility
 
 appImage:

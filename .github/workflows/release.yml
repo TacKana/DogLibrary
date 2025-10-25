@@ -22,6 +22,8 @@ jobs:
         - name: 安装依赖
           run: npm install
         - name: 构建linux
+          env:
+            SNAPCRAFT_STORE_CREDENTIALS: ${{secrets.SNAPCRAFT_STORE_CREDENTIALS}}
           if: matrix.os == 'ubuntu-latest'
           run:  |
             sudo snap install snapcraft --classic
