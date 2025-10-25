@@ -16,7 +16,7 @@
       "previewLimit": 50,
       "driver": "SQLite",
       "name": "缓存",
-      "database": "C:\\Users\\SunJinyuan\\AppData\\Roaming\\dog-library\\answer.db"
+      "database": "C:\\Users\\SunJinyuan\\AppData\\Roaming\\doglibrary\\answer.db"
     }
   ]
 }

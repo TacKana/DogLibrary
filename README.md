@@ -1,4 +1,4 @@
-# dog-library
+# doglibrary
 
 一个使用 Electron、Vue 和 TypeScript 构建的应用程序
 

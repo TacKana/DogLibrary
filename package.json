@@ -1,5 +1,5 @@
 {
-  "name": "dog-library",
+  "name": "doglibrary",
   "version": "1.0.0",
   "description": "本地运行的AI题库",
   "main": "./out/main/main.js",
