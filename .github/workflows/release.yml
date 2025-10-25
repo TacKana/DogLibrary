@@ -4,45 +4,88 @@ on:
   push:
     tags:
       - v*.*.*
-      
+
+# 添加全局权限配置
+permissions:
+  contents: write
+
 jobs:
   release:
     name: 开始构建
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-        - name: 提取代码
-          uses: actions/checkout@v5
-        - name: 安装nodejs
-          uses: actions/setup-node@v5
-          with:
-            node-version: 22
-        - name: 安装依赖
-          run: npm install
-        - name: 构建linux
-          if: matrix.os == 'ubuntu-latest'
-          run: npm run build:linux
+      - name: 提取代码
+        uses: actions/checkout@v5
+        
+      - name: 安装nodejs
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          
+      - name: 安装依赖
+        run: npm install
+        
+      - name: 给 Electron Builder 二进制文件添加执行权限 (仅Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          chmod +x ./node_modules/app-builder-bin/linux/x64/app-builder
+          # 使用通配符匹配 fpm 路径，避免版本号变化导致失败
+          chmod +x ./node_modules/electron-builder-binaries/fpm*/linux-x86_64/fpm
+          
+      - name: 安装 Linux 构建依赖
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            fakeroot \
+            dpkg \
+            rpm \
+            libgtk-3-0 \
+            libnss3 \
+            libxss1 \
+            libasound2 \
+            xvfb
 
-        - name: 构建macos
-          if: matrix.os == 'macos-latest'
-          run: npm run build:mac
+      - name: 构建linux
+        if: matrix.os == 'ubuntu-latest'
+        run: xvfb-run -a npm run build:linux
 
-        - name: 构建windows
-          if: matrix.os == 'windows-latest'
-          run: npm run build:win
-    # 新增：单独的发布作业
+      - name: 构建macos
+        if: matrix.os == 'macos-latest'
+        run: npm run build:mac
+
+      - name: 构建windows
+        if: matrix.os == 'windows-latest'
+        run: npm run build:win
+        
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.os }}
+          path: dist/
+          retention-days: 1
+
+  # 单独的发布作业
   create-release:
     name: 创建发布
     runs-on: ubuntu-latest
     needs: release  # 依赖构建作业完成
+    permissions:
+      contents: write  # 确保发布作业有写入权限
     steps:
       - name: 下载所有构建产物
         uses: actions/download-artifact@v4
         with:
           path: dist-all/
+          pattern: build-artifacts-*
+          merge-multiple: true
           
+      - name: 列出下载的文件（调试用）
+        run: find dist-all/ -type f -name "*" | head -20
+        
       - name: 创建GitHub发布
         uses: softprops/action-gh-release@v2
         with:
@@ -59,4 +102,4 @@ jobs:
             dist-all/**/*.yml
             dist-all/**/*.blockmap
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 建议使用内置token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
