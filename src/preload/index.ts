@@ -26,8 +26,8 @@ const darkMode = {
 const update = {
   check: () => ipcRenderer.invoke('check-Update'),
 }
-const version = {
-  get: () => ipcRenderer.invoke('version:get'),
+const systemInfo = {
+  get: () => ipcRenderer.invoke('systemInfo:get'),
 }
 contextBridge.exposeInMainWorld('Config', config)
 contextBridge.exposeInMainWorld('httpService', httpService)
@@ -35,4 +35,4 @@ contextBridge.exposeInMainWorld('cacheManager', cacheManager)
 contextBridge.exposeInMainWorld('darkMode', darkMode)
 contextBridge.exposeInMainWorld('electron', electronAPI)
 contextBridge.exposeInMainWorld('update', update)
-contextBridge.exposeInMainWorld('version', version)
+contextBridge.exposeInMainWorld('systemInfo', systemInfo)

@@ -9,7 +9,7 @@ const versions = ref()
 const osName = ref()
 onMounted(async () => {
   osName.value = window.electron.process.env.OS!
-  versions.value = await window.version.get()
+  versions.value = (await window.systemInfo.get()).Version
   console.log(versions.value)
 })
 

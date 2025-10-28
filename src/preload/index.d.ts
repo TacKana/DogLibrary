@@ -29,8 +29,11 @@ declare global {
     update: {
       check: () => Promise<void>
     }
-    version: {
-      get: () => Promise<string>
+    systemInfo: {
+      get: () => Promise<{
+        Version: string
+        isDev: boolean
+      }>
     }
   }
 }

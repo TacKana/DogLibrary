@@ -63,7 +63,12 @@ app.whenReady().then(async () => {
   })
   ipcMain.handle('dark-mode:get', () => nativeTheme.shouldUseDarkColors)
   // 获取版本信息并暴露给渲染进程
-  ipcMain.handle('version:get', () => app.getVersion())
+  ipcMain.handle('systemInfo:get', () => {
+    return {
+      Version: app.getVersion(),
+      isDev: is.dev,
+    }
+  })
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
