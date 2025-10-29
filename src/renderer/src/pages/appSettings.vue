@@ -40,7 +40,7 @@ import FadeOutTransition from '@renderer/components/FadeOutTransition.vue'
 .appSettings {
   .list {
     background-color: var(--nav-list-bg-color);
-    height: 100vh;
+    height: $windowHeight;
     display: flex;
     justify-content: center;
     ul {
@@ -65,7 +65,7 @@ import FadeOutTransition from '@renderer/components/FadeOutTransition.vue'
   }
   .body {
     .routerView {
-      height: 100vh;
+      height: 100%;
       overflow: auto;
     }
   }

@@ -29,6 +29,11 @@ const update = {
 const systemInfo = {
   get: () => ipcRenderer.invoke('systemInfo:get'),
 }
+const windowControl = {
+  mix: () => ipcRenderer.send('window-min'),
+  max: () => ipcRenderer.send('window-max'),
+  close: () => ipcRenderer.send('window-close'),
+}
 contextBridge.exposeInMainWorld('Config', config)
 contextBridge.exposeInMainWorld('httpService', httpService)
 contextBridge.exposeInMainWorld('cacheManager', cacheManager)
@@ -36,3 +41,4 @@ contextBridge.exposeInMainWorld('darkMode', darkMode)
 contextBridge.exposeInMainWorld('electron', electronAPI)
 contextBridge.exposeInMainWorld('update', update)
 contextBridge.exposeInMainWorld('systemInfo', systemInfo)
+contextBridge.exposeInMainWorld('windowControl', windowControl)

@@ -11,6 +11,7 @@ function createWindow(): void {
     height: 670,
     minHeight: 670,
     show: false,
+    frame: false,
     icon: path.join(__dirname, '../../build/icons/icon.ico'),
     autoHideMenuBar: true,
     webPreferences: {
@@ -41,6 +42,23 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  //手动实现窗口管理
+  ipcMain.on('window-min', () => {
+    mainWindow.minimize()
+  })
+
+  ipcMain.on('window-max', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.restore()
+    } else {
+      mainWindow.maximize()
+    }
+  })
+
+  ipcMain.on('window-close', () => {
+    mainWindow.close()
+  })
 }
 
 // 当 Electron 完成初始化并准备好创建浏览器窗口时会调用此方法。

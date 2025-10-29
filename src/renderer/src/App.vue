@@ -6,6 +6,7 @@ import SvgIcon from './components/SvgIcon.vue'
 import Clarity from '@microsoft/clarity'
 import { onMounted, ref } from 'vue'
 import FadeOutTransition from './components/FadeOutTransition.vue'
+import appHeader from './components/appHeader.vue'
 
 // 配置微软clarity统计
 // 开发环境不启用统计
@@ -37,6 +38,7 @@ const colorModeToggle = async (): Promise<void> => {
 </script>
 
 <template>
+  <appHeader></appHeader>
   <div class="app">
     <el-row :gutter="0" class="elrow">
       <el-col :span="2">
@@ -101,10 +103,11 @@ const colorModeToggle = async (): Promise<void> => {
 
 <style lang="scss" scoped>
 .app {
+  // padding-top: 5px;
   // background-color: red;
   // position: relative;
   .sidebar {
-    height: 100vh;
+    height: 100%;
     background-color: var(--sidebar-bg-color);
     display: flex;
     flex-direction: column;
@@ -130,7 +133,7 @@ const colorModeToggle = async (): Promise<void> => {
     }
   }
   .routerView {
-    height: 100vh;
+    height: $windowHeight;
     overflow: auto;
   }
 }

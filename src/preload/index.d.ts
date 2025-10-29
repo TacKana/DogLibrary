@@ -35,5 +35,10 @@ declare global {
         isDev: boolean
       }>
     }
+    windowControl: {
+      mix: () => Promise<void>
+      max: () => Promise<void>
+      close: () => Promise<void>
+    }
   }
 }
