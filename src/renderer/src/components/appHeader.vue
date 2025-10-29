@@ -16,7 +16,7 @@ function windowClose(): void {
 <template>
   <header>
     <div class="content">
-      <el-avatar size="small" :src="logo" />
+      <el-avatar :size="20" :src="logo" />
       <el-text size="default" tag="b">狗库</el-text>
     </div>
     <div class="button">
@@ -45,8 +45,11 @@ header {
   .content {
     display: flex;
     align-items: center;
-    padding-left: 10px;
-    padding: 5px 10px 5px;
+    padding: 10px 20px 5px;
+
+    :deep(.el-avatar) {
+      margin-right: 8px;
+    }
   }
   .button {
     // padding-right: 10px;

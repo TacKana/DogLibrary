@@ -26,8 +26,9 @@ const colorModeToggle = async (): Promise<void> => {
 </script>
 
 <template>
-  <appHeader></appHeader>
   <div class="app">
+    <appHeader></appHeader>
+
     <el-row :gutter="0" class="elrow">
       <el-col :span="2">
         <div class="sidebar">
@@ -91,12 +92,14 @@ const colorModeToggle = async (): Promise<void> => {
 
 <style lang="scss" scoped>
 .app {
+  background-color: var(--sidebar-bg-color);
+
   // padding-top: 5px;
   // background-color: red;
   // position: relative;
   .sidebar {
     height: 100%;
-    background-color: var(--sidebar-bg-color);
+    // background-color: var(--sidebar-bg-color);
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -121,8 +124,10 @@ const colorModeToggle = async (): Promise<void> => {
     }
   }
   .routerView {
+    margin: 0px 10px 10px 0px;
     height: $windowHeight;
     overflow: auto;
+    border-radius: 20px;
   }
 }
 </style>

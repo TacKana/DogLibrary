@@ -108,10 +108,12 @@ async function copyConfig(): Promise<MessageHandler> {
 
 <style scoped lang="scss">
 .home {
-  padding: 15px;
-  // height: 100%;
+  padding: 0 15px;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: var(--sidebar-body-color);
+
   .title {
     display: flex;
     align-items: baseline;

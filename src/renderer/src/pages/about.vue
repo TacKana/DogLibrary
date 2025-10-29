@@ -84,6 +84,8 @@ function updates(): void {
 
 <style scoped lang="scss">
 .about {
+  height: 100%;
+  background-color: var(--sidebar-body-color);
   .body {
     display: flex;
     justify-content: center;

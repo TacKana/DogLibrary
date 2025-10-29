@@ -38,11 +38,13 @@ import FadeOutTransition from '@renderer/components/FadeOutTransition.vue'
 
 <style scoped lang="scss">
 .appSettings {
+  height: 100%;
+  background-color: var(--sidebar-body-color);
   .list {
-    background-color: var(--nav-list-bg-color);
-    height: $windowHeight;
+    // height: $windowHeight;
     display: flex;
     justify-content: center;
+    padding-top: 28px;
     ul {
       li {
         .button {

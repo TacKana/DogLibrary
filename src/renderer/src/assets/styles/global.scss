@@ -24,12 +24,15 @@ body {
 // 定义全局主题变量
 :root {
   --sidebar-bg-color: #f4f4f4;
+  --sidebar-body-color: #ffffff;
+
   --sidebar-text-color: #333;
   --nav-list-bg-color: #f5f5f5;
 }
 
 html.dark {
   --sidebar-bg-color: #3c3c3c;
+  --sidebar-body-color: #252526;
   --sidebar-text-color: #e5e7eb;
   --nav-list-bg-color: #313131;
 }
