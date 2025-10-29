@@ -23,7 +23,6 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "@microsoft/clarity": "^1.0.0",
     "@vueuse/core": "^13.9.0",
     "better-sqlite3": "^12.4.1",
     "drizzle-orm": "^0.44.6",
