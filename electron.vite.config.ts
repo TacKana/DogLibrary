@@ -16,13 +16,6 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin(), bytecodePlugin()],
   },
   renderer: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@use '@renderer/assets/styles/variables.scss' as *;`, // 全局注入
-        },
-      },
-    },
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
