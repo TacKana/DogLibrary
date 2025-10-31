@@ -2,8 +2,9 @@ import { app, shell, BrowserWindow, ipcMain, nativeTheme } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { ServiceManager } from './services/ServiceManager'
+import { pageHttpServer } from './utils/pageHttpServer'
 
-function createWindow(): void {
+async function createWindow(): Promise<void> {
   // 创建浏览器窗口。
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -36,11 +37,12 @@ function createWindow(): void {
   })
 
   // 基于 electron-vite 命令行工具的渲染器热模块替换（HMR）。
-  // 开发环境加载远程 URL，生产环境加载本地 html 文件。
+  // 开发环境加载 vite 提供的远程 URL，生产环境加载 express 启动的 url。
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    const prot = await pageHttpServer('../renderer')
+    mainWindow.loadURL(`http://localhost:${prot}`)
   }
 
   //手动实现窗口管理
