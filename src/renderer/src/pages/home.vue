@@ -115,6 +115,7 @@ async function copyConfig(): Promise<MessageHandler> {
   background-color: var(--sidebar-body-color);
 
   .title {
+    padding-top: 15px;
     display: flex;
     align-items: baseline;
   }
