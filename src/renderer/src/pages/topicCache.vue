@@ -105,7 +105,7 @@ async function search(): Promise<void> {
 
 <style scoped lang="scss">
 .topicCache {
-  // padding: 15px;
+  padding: 15px;
   height: 100%;
   background-color: var(--sidebar-body-color);
 
@@ -121,11 +121,12 @@ async function search(): Promise<void> {
   }
 
   .table {
-    padding: 15px;
-
     .operation {
       display: flex;
       justify-content: space-between;
+    }
+    .body {
+      padding-top: 15px;
     }
   }
 }
