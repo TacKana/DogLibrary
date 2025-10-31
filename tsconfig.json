@@ -1,8 +1,4 @@
 {
-  "compilerOptions":{
-    "strict": true,                       // ① 全开严格类型检查
-    "forceConsistentCasingInFileNames": true, // ② 强制文件名大小写一致（Windows ↔ Linux 安全）
-  },
   "files": [],
   "references": [
     {
@@ -11,5 +7,9 @@
     {
       "path": "./tsconfig.web.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+  }
 }
