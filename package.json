@@ -1,6 +1,6 @@
 {
   "name": "doglibrary",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "本地运行的AI题库",
   "main": "./out/main/main.js",
   "author": "dog.xuxo.top",
