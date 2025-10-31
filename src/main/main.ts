@@ -13,7 +13,7 @@ async function createWindow(): Promise<void> {
     minHeight: 670,
     show: false,
     frame: false,
-    icon: path.join(__dirname, '../../build/icons/icon.ico'),
+    icon: path.join(__dirname, '../../resources/icon.ico'),
     autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),

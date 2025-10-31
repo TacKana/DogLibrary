@@ -6,6 +6,18 @@ import SvgIcon from './components/SvgIcon.vue'
 import { onMounted, ref } from 'vue'
 import FadeOutTransition from './components/FadeOutTransition.vue'
 import appHeader from './components/appHeader.vue'
+import Clarity from '@microsoft/clarity'
+
+// 配置微软clarity统计
+// 开发环境不启用统计
+onMounted(async () => {
+  const isDev = (await window.systemInfo.get()).isDev
+  console.log(`开发环境：${isDev}`)
+  if (!isDev) {
+    const projectId = 'tpstapzh7x'
+    Clarity.init(projectId)
+  }
+})
 
 // 深色模式切换按钮
 const colorMode = ref()
